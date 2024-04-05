@@ -11,64 +11,77 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
+
 public class Main {
     public static void main(String[] args) {
 
-//        List<Cards> cards = readJsonArray(Path.of("resource/cards.json"), Cards.class);
-//        for (Cards c : cards) {
-//            System.out.println(c.toString());
-//        }
+        List<Cards> cards = readJsonArray(Path.of("resource/cards.json"), Cards.class);
         try {
-            File file = new File("output.txt");
-            FileWriter writer = new FileWriter(file);
+            File file = new File("../Process_Data/Cards.sql");
+            System.setOut(new PrintStream(new FileOutputStream(file)));
+            System.out.println("""
+                    CREATE TABLE Cards (
+                        Card_number varchar(10) primary key not null,
+                        Money float,
+                        Create_time varchar(255)
+                    );
+                    """);
+            for (Cards c : cards) {
+                System.out.print("INSERT INTO Cards(Card_number, Money, Create_time) ");
+                System.out.printf(
+                        " VALUES('%s', %f, '%s');\n",
+                        c.getCode(), c.getMoney(), c.getCreate_time());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        List<Passengers> users = readJsonArray(Path.of("resource/passenger.json"), Passengers.class);
+        try {
+            File file = new File("../Process_Data/Passengers.sql");
+            System.setOut(new PrintStream(new FileOutputStream(file)));
+            System.out.println("""
+                    CREATE TABLE Users (
+                        User_id_number varchar(18) primary key not null,
+                        Name varchar(10) not null,
+                        Phone varchar(11),
+                        Gender char(1),
+                        District varchar(18)
+                    );
+                    """);
+            for (Passengers p : users) {
+                System.out.print("INSERT INTO Users(User_id_number, Name, Phone, Gender, District) ");
+                System.out.printf(
+                        " VALUES('%s', '%s', '%s', '%c', '%s');\n",
+                        p.getId_number(), p.getName(), p.getPhone(), p.getGender(), p.getDistrict());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        try {
+            File file = new File("../Process_Data/Stations.sql");
             System.setOut(new PrintStream(new FileOutputStream(file)));
             String jsonStrings = Files.readString(Path.of("resource/stations.json"));
             JSONObject jsonObject = JSONObject.parseObject(jsonStrings, Feature.OrderedField);
-            int tmp = 0, tmp2 = 0, tmp3 = 0;
+            System.out.println("""
+                    CREATE TABLE if not exists Stations (
+                        Station_id    int         not null primary key,
+                        English_name  varchar(900) not null,
+                        Chinese_name  varchar(900) not null,
+                        District      varchar(900) not null,
+                        Introduction  text
+                    );
+                    """);
+            int tmp = 0;
             for (String stationName : jsonObject.keySet()) {
                 JSONObject station = jsonObject.getJSONObject(stationName);
-//                System.out.printf("INSERT INTO stations(station_id, English_name, Chinese_name, District, Introduction)");
-//                String StationName = stationName.replace("'", "''");
-//                String Introduction = station.getString("intro").replace("'", "''");
-//                System.out.printf(
-//                        " VALUES(%d, '%s', '%s', '%s', '%s');\n",
-//                        ++tmp, StationName, station.getString("chinese_name"), station.getString("district"), Introduction);
-
-                //System.out.println("--BusInfo");
-//                JSONArray busInfoArray = JSONArray.parseArray(station.getString("bus_info"));
-//                for (Object busInfoObject : busInfoArray) {
-//                    JSONObject busInfo = (JSONObject) busInfoObject;
-//                    System.out.println("\tchukou: " + busInfo.getString("chukou"));
-//                    ++tmp2;
-//                    JSONArray busOutInfoArray = busInfo.getJSONArray("busOutInfo");
-//                    for (Object busOutObject : busOutInfoArray) {
-//                        JSONObject busOutInfo = (JSONObject) busOutObject;
-//                        ++tmp3;
-////                        System.out.printf("INSERT INTO Bus_Name(BusName_id, Entrance_id, BusName)");
-////                        System.out.printf(" VALUES(%d, %d, '%s');\n", tmp3, tmp2, busOutInfo.getString("busName"));
-//                        String[] buslines = busOutInfo.getString("busInfo").split("、|\\s|,|\\.|，|。|;|；");
-//                        for (String busline : buslines) {
-////                            System.out.printf("INSERT INTO Bus_Line(BusLine_id, BusName_id, BusLine)");
-////                            String BusLine = busline.replace(" ", "");
-////                            System.out.printf(" VALUES(%d, %d, '%s');\n", ++tmp, tmp3, BusLine);
-//                        }
-//                        System.out.println("\tbusInfo: " + Arrays.toString(buslines));
-//                        System.out.println("\tbusName: " + busOutInfo.getString("busName"));
-//                    }
-//                }
-
-
-                System.out.println("--TexttInfo");
-                JSONArray outInfoArray = JSONArray.parseArray(station.getString("out_info"));
-
-                for (Object outInfoObject : outInfoArray) {
-                    JSONObject outInfo = (JSONObject) outInfoObject;
-                    System.out.println("\toutt: " + outInfo.getString("outt").trim());
-                    String[] textt = outInfo.getString("textt").split("、");
-                    System.out.println("\ttextt: " + Arrays.toString(textt));
-
-                }
-                writer.close();
+                System.out.print("INSERT INTO stations(station_id, English_name, Chinese_name, District, Introduction) ");
+                String StationName = stationName.replace("'", "''");
+                String Introduction = station.getString("intro").replace("'", "''");
+                System.out.printf(
+                        "VALUES(%d, '%s', '%s', '%s', '%s');\n",
+                        ++tmp, StationName, station.getString("chinese_name"), station.getString("district"), Introduction);
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
