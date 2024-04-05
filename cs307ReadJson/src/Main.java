@@ -14,7 +14,6 @@ import java.io.PrintStream;
 
 public class Main {
     public static void main(String[] args) {
-
         // Cards
         List<Cards> cards = readJsonArray(Path.of("resource/cards.json"), Cards.class);
         try {
@@ -61,7 +60,7 @@ public class Main {
             e.printStackTrace();
         }
 
-        // Stations and all related
+        // Lines, stations and all related
         HashMap<String, Integer> stationsMap = new HashMap<>();
         try {
             File
@@ -69,8 +68,14 @@ public class Main {
                     fileEntrances = new File("../Process_Data/Entrance.sql"),
                     fileBuildings = new File("../Process_Data/Buildings.sql"),
                     fileBusName = new File("../Process_Data/Bus_Name.sql"),
-                    fileBusLine = new File("../Process_Data/Bus_Line.sql");
-            FileWriter writerStations = new FileWriter(fileStations), writerEntrances = new FileWriter(fileEntrances), writerBuildings = new FileWriter(fileBuildings), writerBusName = new FileWriter(fileBusName), writerBusLine = new FileWriter(fileBusLine);
+                    fileBusLine = new File("../Process_Data/Bus_Line.sql"),
+                    fileLines = new File("../Process_Data/Lines.sql"),
+                    fileLinesDetail = new File("../Process_Data/Lines_Detail.sql");
+
+            FileWriter writerStations = new FileWriter(fileStations), writerEntrances = new FileWriter(fileEntrances), writerBuildings = new FileWriter(fileBuildings), writerBusName = new FileWriter(fileBusName), writerBusLine = new FileWriter(fileBusLine), writerLines = new FileWriter(fileLines), writerLinesDetail = new FileWriter(fileLinesDetail);
+
+            String LinesStrings = Files.readString(Path.of("resource/lines.json"));
+            JSONObject LineObject = JSONObject.parseObject(LinesStrings, Feature.OrderedField);
 
             String jsonStrings = Files.readString(Path.of("resource/stations.json"));
             JSONObject jsonObject = JSONObject.parseObject(jsonStrings, Feature.OrderedField);
@@ -111,6 +116,26 @@ public class Main {
                         Entrance_id int primary key not null,
                         station_id int not null,
                         entrance varchar(255)
+                    );
+                    """);
+            writerLinesDetail.append("""
+                    CREATE TABLE Line_details (
+                        Line_id int,
+                        Station_id int,
+                        primary key (Line_id, Station_id)
+                    );
+                    """);
+            writerLines.append("""
+                    CREATE TABLE Lines(
+                        Line_id int,
+                        start_time varchar(10),
+                        end_time varchar(10),
+                        intro text,
+                        mileage varchar(10),
+                        color varchar(10),
+                        first_opening date,
+                        url varchar(100),
+                        primary key(Line_id)
                     );
                     """);
 
@@ -185,11 +210,37 @@ public class Main {
                     }
                 }
             }
+
+            // Lines
+            int line_id = 0;
+            for (String linename : LineObject.keySet()) {
+                JSONObject Lines = LineObject.getJSONObject(linename);
+                ++line_id;
+                String start_time = Lines.getString("start_time");
+                String end_time = Lines.getString("end_time");
+                String intro = Lines.getString("intro");
+                String mileage = Lines.getString("mileage");
+                String color = Lines.getString("color");
+                String first_opening = Lines.getString("first_opening");
+                String url = Lines.getString("url");
+                JSONArray station_array = JSONArray.parseArray(Lines.getString("stations"));
+                writerLines.append("INSERT INTO Lines(Line_id, start_time, end_time, intro, mileage, color, first_opening, url) ");
+                writerLines.append("VALUES(" + line_id + ", '" + start_time + "', '" + end_time + "', '" + intro + "', '" + mileage + "', '" + color + "', '" + first_opening + "', '" + url + "');\n");
+                for (Object station_array_info : station_array) {
+                    if (!stationsMap.containsKey(station_array_info.toString())) continue;
+                    int stationid = stationsMap.get(station_array_info.toString());
+                    writerLinesDetail.append("INSERT INTO Line_details(Line_id, Station_id) ");
+                    writerLinesDetail.append("VALUES(" + line_id + ", " + stationid + ");\n");
+                }
+            }
+
             writerStations.close();
             writerEntrances.close();
             writerBuildings.close();
             writerBusName.close();
             writerBusLine.close();
+            writerLines.close();
+            writerLinesDetail.close();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
