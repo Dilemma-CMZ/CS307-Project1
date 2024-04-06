@@ -1,8 +1,9 @@
-CREATE TABLE Buildings(
-    Building_id int,
-    Entrance_id int,
-    Entrance varchar(255),
-    primary key(Building_id)
+CREATE TABLE Buildings (
+    Building_id INT NOT NULL,
+    Entrance_id INT NOT NULL,
+    Entrance VARCHAR(255),
+    PRIMARY KEY (Building_id),
+    CONSTRAINT buildings_fk1 FOREIGN KEY (Entrance_id) REFERENCES Entrances (Entrance_id)
 );
 INSERT INTO Buildings(Building_id, Entrance_id, Entrance) VALUES(1, 3, '罗湖口岸（中国边检）');
 INSERT INTO Buildings(Building_id, Entrance_id, Entrance) VALUES(2, 3, '罗湖长途客运站');

@@ -281,11 +281,11 @@ public class Main {
                 if (r.getUser().length() == 18) { // user rides
                     writerUser.append("INSERT INTO User_Rides(Ride_id, User_id, From_station, To_station, Price, Start_time, End_time) ");
                     writerUser.append(
-                            " VALUES(" + (++tmp) + ", '" + r.getUser() + "', " + stationsMap.get(r.getStartStation()) + ", " + stationsMap.get(r.getEndStation()) + ", " + r.getPrice() + ", '" + r.getStartTime() + "', '" + r.getEndTime() + "');\n");
+                            " VALUES(" + (++tmp) + ", '" + r.getUser() + "', " + stationsMap.get(r.getStartStation().replace("'", "''")) + ", " + stationsMap.get(r.getEndStation().replace("'", "''")) + ", " + r.getPrice() + ", '" + r.getStartTime() + "', '" + r.getEndTime() + "');\n");
                 } else if (r.getUser().length() == 9) { // card rides
                     writerCard.append("INSERT INTO Card_Rides(Ride_id, Card_id, From_station, To_station, Price, Start_time, End_time) ");
                     writerCard.append(
-                            " VALUES(" + (++tmp) + ", '" + r.getUser() + "', " + stationsMap.get(r.getStartStation()) + ", " + stationsMap.get(r.getEndStation()) + ", " + r.getPrice() + ", '" + r.getStartTime() + "', '" + r.getEndTime() + "');\n");
+                            " VALUES(" + (++tmp) + ", '" + r.getUser() + "', " + stationsMap.get(r.getStartStation().replace("'", "''")) + ", " + stationsMap.get(r.getEndStation().replace("'", "''")) + ", " + r.getPrice() + ", '" + r.getStartTime() + "', '" + r.getEndTime() + "');\n");
                 }
             }
             writerUser.close();
