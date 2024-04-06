@@ -1,4 +1,4 @@
-CREATE TABLE Lines(
+CREATE TABLE if not exists Lines (
     Line_id int
     constraint Lines_uq1 unique,
     start_time varchar(10) not null,
@@ -9,7 +9,7 @@ CREATE TABLE Lines(
     first_opening date not null,
     url varchar(100) not null,
     primary key(Line_id),
-    constraint Lines_uq2 unique(start_time, end_time, mileage, color, first_opening, url)
+    constraint Lines_uq2 unique (start_time, end_time, mileage, color, first_opening, url)
 );
 INSERT INTO Lines(Line_id, start_time, end_time, intro, mileage, color, first_opening, url) VALUES(1, '06:20', '23:00', '深圳地铁1号线（Shenzhen Metro Line 1）是中国广东省深圳市第一条建成运营的地铁线路，于2004年12月28日开通运营一期工程，于2011年6月15日开通运营二期工程，其标志色为绿色 。截至2022年6月，深圳地铁1号线东起罗湖区罗湖站，途经福田区、南山区，西至宝安区机场东站，呈L型西北——东南走向 。截至2022年6月，深圳地铁1号线一二期工程线路总长40.876千米，共有30个站点，其中28座地下站，2座高架站，列车采用6节编组A型列车 。截至2023年10月，深圳地铁1号线单日最大客流量为2019年12月31日的143.9万人次 。深圳地铁1号线（Shenzhen Metro Line 1）是中国广东省深圳市第一条建成运营的地铁线路，于2004年12月28日开通运营一期工程，于2011年6月15日开通运营二期工程，其标志色为绿色 。截至2022年6月，深圳地铁1号线东起罗湖区罗湖站，途经福田区、南山区，西至宝安区机场东站，呈L型西北——东南走向 。截至2022年6月，深圳地铁1号线一二期工程线路总长40.876千米，共有30个站点，其中28座地下站，2座高架站，列车采用6节编组A型列车 。截至2023年10月，深圳地铁1号线单日最大客流量为2019年12月31日的143.9万人次 。', '40.876', '绿色', '2004-12-28', 'https://baike.baidu.com/item/深圳地铁1号线/6178769?fromModule=lemma_inlink');
 INSERT INTO Lines(Line_id, start_time, end_time, intro, mileage, color, first_opening, url) VALUES(2, '05:50', '22:44', '深圳地铁2号线（Shenzhen Metro Line 2），是中国广东省深圳市第3条建成运营的地铁线路，于2010年12月28日开通运营一期工程， 2011年6月28日开通运营二期工程，2020年10月28日开通运营三期工程，与深圳地铁8号线贯通运营， 其标志色为暗橙色。截至2022年11月，深圳地铁2号线呈S形向东-西南走向，西起南山区赤湾站，途经福田区，东至罗湖区莲塘站。截至2022年11月，深圳地铁2号线全长39.567千米，均为地下线；共设32座车站，均为地下车站，列车设计时速80千米/小时，采用6节编组A型列车。  截至2018年7月，深圳地铁2号线单日最大客流量为2018年7月20日的66.8万人次。深圳地铁2号线（Shenzhen Metro Line 2），是中国广东省深圳市第3条建成运营的地铁线路，于2010年12月28日开通运营一期工程， 2011年6月28日开通运营二期工程，2020年10月28日开通运营三期工程，与深圳地铁8号线贯通运营， 其标志色为暗橙色。截至2022年11月，深圳地铁2号线呈S形向东-西南走向，西起南山区赤湾站，途经福田区，东至罗湖区莲塘站。截至2022年11月，深圳地铁2号线全长39.567千米，均为地下线；共设32座车站，均为地下车站，列车设计时速80千米/小时，采用6节编组A型列车。  截至2018年7月，深圳地铁2号线单日最大客流量为2018年7月20日的66.8万人次。', '39.567', '暗橙色', '2010-12-28', 'https://baike.baidu.com/item/深圳地铁2号线/389961?fromModule=lemma_inlink');

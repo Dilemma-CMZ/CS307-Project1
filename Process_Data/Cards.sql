@@ -1,4 +1,4 @@
-CREATE TABLE Cards (
+CREATE TABLE if not exists Cards (
     Card_number varchar(10) primary key not null,
     Money float,
     Create_time varchar(255)

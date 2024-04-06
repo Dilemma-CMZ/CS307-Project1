@@ -1,4 +1,4 @@
-CREATE TABLE Buildings (
+CREATE TABLE if not exists Buildings (
     Building_id INT NOT NULL,
     Entrance_id INT NOT NULL,
     Entrance VARCHAR(255),
