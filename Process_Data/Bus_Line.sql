@@ -1904,7 +1904,7 @@ INSERT INTO Bus_Line(BusLine_id, BusName_id, BusLine) VALUES(1897, 230, 'P449路
 INSERT INTO Bus_Line(BusLine_id, BusName_id, BusLine) VALUES(1898, 230, 'P759路');
 INSERT INTO Bus_Line(BusLine_id, BusName_id, BusLine) VALUES(1899, 230, 'P778路');
 INSERT INTO Bus_Line(BusLine_id, BusName_id, BusLine) VALUES(1900, 230, 'P84路');
-INSERT INTO Bus_Line(BusLine_id, BusName_id, BusLine) VALUES(1901, 230, '高峰专线29路                                    ');
+INSERT INTO Bus_Line(BusLine_id, BusName_id, BusLine) VALUES(1901, 230, '高峰专线29路');
 INSERT INTO Bus_Line(BusLine_id, BusName_id, BusLine) VALUES(1902, 230, 'F出入口');
 INSERT INTO Bus_Line(BusLine_id, BusName_id, BusLine) VALUES(1903, 231, '64路');
 INSERT INTO Bus_Line(BusLine_id, BusName_id, BusLine) VALUES(1904, 231, '225路');
@@ -7125,7 +7125,7 @@ INSERT INTO Bus_Line(BusLine_id, BusName_id, BusLine) VALUES(7118, 886, 'M357');
 INSERT INTO Bus_Line(BusLine_id, BusName_id, BusLine) VALUES(7119, 886, 'M361');
 INSERT INTO Bus_Line(BusLine_id, BusName_id, BusLine) VALUES(7120, 886, 'M434');
 INSERT INTO Bus_Line(BusLine_id, BusName_id, BusLine) VALUES(7121, 886, 'M443');
-INSERT INTO Bus_Line(BusLine_id, BusName_id, BusLine) VALUES(7122, 886, 'M480                      ');
+INSERT INTO Bus_Line(BusLine_id, BusName_id, BusLine) VALUES(7122, 886, 'M480');
 INSERT INTO Bus_Line(BusLine_id, BusName_id, BusLine) VALUES(7123, 886, 'A3出入口');
 INSERT INTO Bus_Line(BusLine_id, BusName_id, BusLine) VALUES(7124, 887, '818');
 INSERT INTO Bus_Line(BusLine_id, BusName_id, BusLine) VALUES(7125, 887, '939');
