@@ -4,7 +4,11 @@
 #include <pqxx/pqxx>
 #include <chrono>
 
-std::string files[] = {"../Process_Data/Definition.sql", "../Process_Data/Buildings.sql", "../Process_Data/Bus_Line.sql", "../Process_Data/Bus_Name.sql", "../Process_Data/Card_Rides.sql", "../Process_Data/Cards.sql", "../Process_Data/Entrance.sql", "../Process_Data/Lines_Detail.sql", "../Process_Data/Lines.sql", "../Process_Data/Stations.sql", "../Process_Data/User_Rides.sql", "../Process_Data/Users.sql"};
+std::string files[] = {"../Process_Data/Definition.sql", "../Process_Data/Lines.sql", "../Process_Data/Stations.sql", 
+"../Process_Data/Lines_Detail.sql", "../Process_Data/Entrance.sql", "../Process_Data/Buildings.sql", "../Process_Data/Bus_Name.sql", 
+"../Process_Data/Bus_Line.sql", "../Process_Data/Users.sql", "../Process_Data/Cards.sql", "../Process_Data/User_Rides.sql",
+ "../Process_Data/Card_Rides.sql"
+};
 
 void load_data(pqxx::connection& C, const std::string& file) {
     // Open the SQL file
@@ -40,6 +44,7 @@ int main() {
 
         auto start = std::chrono::high_resolution_clock::now();
         for (int i = 0; i < 12; i++) {
+            printf("i = %d Loading %s\n", i, files[i].c_str());
             load_data(C, files[i]);
         }
         auto end = std::chrono::high_resolution_clock::now();
