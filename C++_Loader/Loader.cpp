@@ -23,10 +23,8 @@ void load_data(pqxx::connection& C, const std::string& file) {
     while (std::getline(sql_file, line)) {
         // Start a transaction
         pqxx::work W(C);
-
         // Execute the SQL command
         W.exec(line);
-
         // Commit the transaction
         W.commit();
     }
@@ -46,10 +44,11 @@ int main() {
         for (int i = 0; i < 12; i++) {
             printf("i = %d Loading %s\n", i, files[i].c_str());
             load_data(C, files[i]);
+            printf("Successfully loaded %s\n", files[i].c_str());
         }
         auto end = std::chrono::high_resolution_clock::now();
         auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-        std::cout << "Execution time: " << duration.count() << " ms" << std::endl;
+        std::cout << "Execution time: " << 1.0 * duration.count() / 1000 << " s" << std::endl;
     } catch (const std::exception &e) {
         std::cerr << e.what() << std::endl;
         return 1;
@@ -57,3 +56,4 @@ int main() {
     return 0;
 }
 //g++ -std=c++17 -o program Loader.cpp -L/System/Volumes/Data/opt/homebrew/Cellar/libpqxx/7.9.0/lib -lpqxx 编译命令
+//./program 运行命令
