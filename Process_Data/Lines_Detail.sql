@@ -1,11 +1,3 @@
-CREATE TABLE if not exists Line_details (
-    Line_id int not null,
-    Station_id int not null,
-    line_num int not null,
-    primary key (Line_id, Station_id),
-    constraint Line_detail_fk1 foreign key (Line_id) references Lines(Line_id),
-    constraint Line_detail_fk2 foreign key (Station_id) references Stations(Station_id)
-);
 INSERT INTO Line_details(Line_id, Station_id, line_num) VALUES(1, 1, 1);
 INSERT INTO Line_details(Line_id, Station_id, line_num) VALUES(1, 2, 2);
 INSERT INTO Line_details(Line_id, Station_id, line_num) VALUES(1, 3, 3);

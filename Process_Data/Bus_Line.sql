@@ -1,9 +1,3 @@
-CREATE TABLE if not exists Bus_Lines (
-    BusLine_id int primary key,
-    BusName_id int not null,
-    BusLine varchar(50) not null,
-    constraint Bus_Lines_fk1 foreign key(BusName_id) references Bus_Names(BusName_id)
-);
 INSERT INTO Bus_Line(BusLine_id, BusName_id, BusLine) VALUES(1, 1, '1');
 INSERT INTO Bus_Line(BusLine_id, BusName_id, BusLine) VALUES(2, 1, '12');
 INSERT INTO Bus_Line(BusLine_id, BusName_id, BusLine) VALUES(3, 1, '17');
@@ -3993,7 +3987,7 @@ INSERT INTO Bus_Line(BusLine_id, BusName_id, BusLine) VALUES(3986, 462, 'M410');
 INSERT INTO Bus_Line(BusLine_id, BusName_id, BusLine) VALUES(3987, 462, 'M495');
 INSERT INTO Bus_Line(BusLine_id, BusName_id, BusLine) VALUES(3988, 462, 'M548');
 INSERT INTO Bus_Line(BusLine_id, BusName_id, BusLine) VALUES(3989, 462, '高峰专线');
-INSERT INTO Bus_Line(BusLine_id, BusName_id, BusLine) VALUES(3990, 462, '121 ');
+INSERT INTO Bus_Line(BusLine_id, BusName_id, BusLine) VALUES(3990, 462, '121');
 INSERT INTO Bus_Line(BusLine_id, BusName_id, BusLine) VALUES(3991, 462, 'B出入口');
 INSERT INTO Bus_Line(BusLine_id, BusName_id, BusLine) VALUES(3992, 463, '629');
 INSERT INTO Bus_Line(BusLine_id, BusName_id, BusLine) VALUES(3993, 463, 'M234');

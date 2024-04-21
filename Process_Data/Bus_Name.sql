@@ -1,9 +1,3 @@
-CREATE TABLE if not exists Bus_Names (
-    BusName_id int primary key,
-    Entrance_id int not null,
-    BusName varchar(255),
-    constraint Bus_Names_connection1 foreign key(Entrance_id) references entrances(Entrance_id)
-);
 INSERT INTO Bus_Name(BusName_id, Entrance_id, BusName) VALUES(1, 1, '火车站');
 INSERT INTO Bus_Name(BusName_id, Entrance_id, BusName) VALUES(2, 2, '火车站西广场');
 INSERT INTO Bus_Name(BusName_id, Entrance_id, BusName) VALUES(3, 10, '金光华广场');

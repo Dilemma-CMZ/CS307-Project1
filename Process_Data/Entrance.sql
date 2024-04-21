@@ -1,9 +1,3 @@
-CREATE TABLE if not exists Entrances (
-    Entrance_id int primary key not null,
-    station_id int not null,
-    Entrance_name varchar(255),
-    constraint Entrances_fk1 foreign key (station_id) references stations(station_id)
-);
 INSERT INTO Entrance(Entrance_id, Station_id, Entrance) VALUES(1, 1, 'B出口');
 INSERT INTO Entrance(Entrance_id, Station_id, Entrance) VALUES(3, 1, 'A1出入口');
 INSERT INTO Entrance(Entrance_id, Station_id, Entrance) VALUES(2, 1, 'D出入口');
@@ -386,7 +380,7 @@ INSERT INTO Entrance(Entrance_id, Station_id, Entrance) VALUES(377, 77, 'A出入
 INSERT INTO Entrance(Entrance_id, Station_id, Entrance) VALUES(380, 77, 'B出入口');
 INSERT INTO Entrance(Entrance_id, Station_id, Entrance) VALUES(382, 78, 'C出入口');
 INSERT INTO Entrance(Entrance_id, Station_id, Entrance) VALUES(381, 78, 'A出入口');
-INSERT INTO Entrance(Entrance_id, Station_id, Entrance) VALUES(383, 78, ' B出入口');
+INSERT INTO Entrance(Entrance_id, Station_id, Entrance) VALUES(383, 78, 'B出入口');
 INSERT INTO Entrance(Entrance_id, Station_id, Entrance) VALUES(387, 79, 'D出入口');
 INSERT INTO Entrance(Entrance_id, Station_id, Entrance) VALUES(384, 79, 'C出入口');
 INSERT INTO Entrance(Entrance_id, Station_id, Entrance) VALUES(385, 79, 'A出入口');
@@ -429,7 +423,7 @@ INSERT INTO Entrance(Entrance_id, Station_id, Entrance) VALUES(420, 86, 'B出入
 INSERT INTO Entrance(Entrance_id, Station_id, Entrance) VALUES(426, 87, 'A1出入口');
 INSERT INTO Entrance(Entrance_id, Station_id, Entrance) VALUES(427, 87, 'B3出入口');
 INSERT INTO Entrance(Entrance_id, Station_id, Entrance) VALUES(428, 87, 'B4出入口');
-INSERT INTO Entrance(Entrance_id, Station_id, Entrance) VALUES(429, 87, ' C1出入口');
+INSERT INTO Entrance(Entrance_id, Station_id, Entrance) VALUES(429, 87, 'C1出入口');
 INSERT INTO Entrance(Entrance_id, Station_id, Entrance) VALUES(430, 87, 'C2出入口');
 INSERT INTO Entrance(Entrance_id, Station_id, Entrance) VALUES(425, 87, 'B2出入口');
 INSERT INTO Entrance(Entrance_id, Station_id, Entrance) VALUES(423, 87, 'A2出入口');

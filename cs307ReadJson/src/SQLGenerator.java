@@ -69,6 +69,7 @@ public class SQLGenerator {
         HashMap<String, Integer> stationsMap = new HashMap<>();
         try {
             File
+                    fileDefinition = new File("../Process_Data/Definition.sql"),
                     fileStations = new File("../Process_Data/Stations.sql"),
                     fileEntrances = new File("../Process_Data/Entrance.sql"),
                     fileBuildings = new File("../Process_Data/Buildings.sql"),
@@ -77,7 +78,7 @@ public class SQLGenerator {
                     fileLines = new File("../Process_Data/Lines.sql"),
                     fileLinesDetail = new File("../Process_Data/Lines_Detail.sql");
 
-            FileWriter writerStations = new FileWriter(fileStations), writerEntrances = new FileWriter(fileEntrances), writerBuildings = new FileWriter(fileBuildings), writerBusName = new FileWriter(fileBusName), writerBusLine = new FileWriter(fileBusLine), writerLines = new FileWriter(fileLines), writerLinesDetail = new FileWriter(fileLinesDetail);
+            FileWriter writerStations = new FileWriter(fileStations), writerEntrances = new FileWriter(fileEntrances), writerBuildings = new FileWriter(fileBuildings), writerBusName = new FileWriter(fileBusName), writerBusLine = new FileWriter(fileBusLine), writerLines = new FileWriter(fileLines), writerLinesDetail = new FileWriter(fileLinesDetail), writerDefinition = new FileWriter(fileDefinition);
 
             String LinesStrings = Files.readString(Path.of("resource/lines.json"));
             JSONObject LineObject = JSONObject.parseObject(LinesStrings, Feature.OrderedField);
@@ -85,7 +86,7 @@ public class SQLGenerator {
             String jsonStrings = Files.readString(Path.of("resource/stations.json"));
             JSONObject jsonObject = JSONObject.parseObject(jsonStrings, Feature.OrderedField);
 
-            writerStations.append("""
+            writerDefinition.append("""
                     CREATE TABLE if not exists Stations (
                         Station_id    int not null primary key,
                         English_name  varchar(900) not null,
@@ -95,7 +96,7 @@ public class SQLGenerator {
                         constraint Stations_uq1 unique (English_name, Chinese_name)
                     );
                     """);
-            writerBuildings.append("""
+            writerDefinition.append("""
                     CREATE TABLE if not exists Buildings (
                         Building_id INT NOT NULL,
                         Entrance_id INT NOT NULL,
@@ -104,7 +105,7 @@ public class SQLGenerator {
                         CONSTRAINT buildings_fk1 FOREIGN KEY (Entrance_id) REFERENCES Entrances (Entrance_id)
                     );
                     """);
-            writerBusLine.append("""
+            writerDefinition.append("""
                     CREATE TABLE if not exists Bus_Lines (
                         BusLine_id int primary key,
                         BusName_id int not null,
@@ -112,7 +113,7 @@ public class SQLGenerator {
                         constraint Bus_Lines_fk1 foreign key(BusName_id) references Bus_Names(BusName_id)
                     );
                     """);
-            writerBusName.append("""
+            writerDefinition.append("""
                     CREATE TABLE if not exists Bus_Names (
                         BusName_id int primary key,
                         Entrance_id int not null,
@@ -120,7 +121,7 @@ public class SQLGenerator {
                         constraint Bus_Names_connection1 foreign key(Entrance_id) references entrances(Entrance_id)
                     );
                     """);
-            writerEntrances.append("""
+            writerDefinition.append("""
                     CREATE TABLE if not exists Entrances (
                         Entrance_id int primary key not null,
                         station_id int not null,
@@ -128,7 +129,7 @@ public class SQLGenerator {
                         constraint Entrances_fk1 foreign key (station_id) references stations(station_id)
                     );
                     """);
-            writerLinesDetail.append("""
+            writerDefinition.append("""
                     CREATE TABLE if not exists Line_details (
                         Line_id int not null,
                         Station_id int not null,
@@ -138,7 +139,7 @@ public class SQLGenerator {
                         constraint Line_detail_fk2 foreign key (Station_id) references Stations(Station_id)
                     );
                     """);
-            writerLines.append("""
+            writerDefinition.append("""
                     CREATE TABLE if not exists Lines (
                         Line_id int
                         constraint Lines_uq1 unique,
@@ -183,7 +184,7 @@ public class SQLGenerator {
                             String BusLine = busline.replace(" ", "");
                             if (BusLine.equals("")) continue;
                             writerBusLine.append("INSERT INTO Bus_Line(BusLine_id, BusName_id, BusLine)");
-                            writerBusLine.append(" VALUES(" + (++bus_line_count) + ", " + bus_count + ", '" + BusLine + "');\n");
+                            writerBusLine.append(" VALUES(" + (++bus_line_count) + ", " + bus_count + ", '" + BusLine.trim().replace(" ", "") + "');\n");
                         }
                     }
                 }
@@ -200,14 +201,14 @@ public class SQLGenerator {
                     for (String text : textt) {
                         if (text.equals("")) continue;
                         writerBuildings.append("INSERT INTO Buildings(Building_id, Entrance_id, Entrance)");
-                        writerBuildings.append(" VALUES(" + (++building_count) + ", " + Entrance_map.get(entrance) + ", '" + text + "');\n");
+                        writerBuildings.append(" VALUES(" + (++building_count) + ", " + Entrance_map.get(entrance) + ", '" + text.trim().replace(" ", "") + "');\n");
                     }
                 }
 
                 // Entrances
                 for (String entrance : Entrance_map.keySet()) {
                     writerEntrances.append("INSERT INTO Entrance(Entrance_id, Station_id, Entrance)");
-                    writerEntrances.append(" VALUES(" + Entrance_map.get(entrance) + ", " + station_count + ", '" + entrance + "');\n");
+                    writerEntrances.append(" VALUES(" + Entrance_map.get(entrance) + ", " + station_count + ", '" + entrance.trim().replace(" ", "") + "');\n");
                 }
 
                 // Bus Name
@@ -221,7 +222,7 @@ public class SQLGenerator {
                         JSONObject busOutInfo = (JSONObject) busOutObject;
                         String[] buslines = busOutInfo.getString("busInfo").split("、|\\s|,|\\.|，|。|;|；");
                         writerBusName.append("INSERT INTO Bus_Name(BusName_id, Entrance_id, BusName)");
-                        writerBusName.append(" VALUES(" + (++bus_countt) + ", " + Entrance_map.get(entrance) + ", '" + busOutInfo.getString("busName") + "');\n");
+                        writerBusName.append(" VALUES(" + (++bus_countt) + ", " + Entrance_map.get(entrance) + ", '" + busOutInfo.getString("busName").trim() + "');\n");
                     }
                 }
             }
@@ -257,6 +258,7 @@ public class SQLGenerator {
             writerBusLine.close();
             writerLines.close();
             writerLinesDetail.close();
+            writerDefinition.close();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
