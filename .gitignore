@@ -367,3 +367,4 @@ $RECYCLE.BIN/
 
 # End of https://www.toptal.com/developers/gitignore/api/visualstudiocode,intellij+all,windows,macos,java,python
 cs307ReadJson/.DS_Store
+dbUser.properties
