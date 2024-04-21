@@ -41,7 +41,10 @@ int main() {
         }
 
         auto start = std::chrono::high_resolution_clock::now();
-        for (int i = 0; i < 12; i++) {
+        load_data(C, files[0]);
+        //load_data(C, "../Process_Data/disable_triggers.sql");
+        //load_data(C, " ../Process_Data/enable_triggers.sql");
+        for (int i = 1; i < 12; i++) {
             printf("i = %d Loading %s\n", i, files[i].c_str());
             load_data(C, files[i]);
             printf("Successfully loaded %s\n", files[i].c_str());

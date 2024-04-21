@@ -41,17 +41,39 @@ def import_all():
 
     #cur.execute(dis_triggers)
     #cur.execute(en_triggers)
+    print("Lines.sql is being loaded...")
     cur.execute(read_Lines);
+    print("Successfully loaded Lines")
+    print("Stations.sql is being loaded...")
     cur.execute(read_Stations);
+    print("Successfully loaded Stations")
+    print("Lines_Detail.sql is being loaded...")
     cur.execute(read_Lines_Detail);
+    print("Successfully loaded Lines_Detail")
+    print("Entrance.sql is being loaded...")
     cur.execute(read_Entrances);
+    print("Successfully loaded Entrances")
+    print("Buildings.sql is being loaded...")
     cur.execute(read_Buildings);
+    print("Successfully loaded Buildings")
+    print("Bus_Name.sql is being loaded...")
     cur.execute(read_Bus_Name);
+    print("Successfully loaded Bus_Name")
+    print("Bus_Line.sql is being loaded...")
     cur.execute(read_Bus_Line);
+    print("Successfully loaded Bus_Line")
+    print("Users.sql is being loaded...")
     cur.execute(read_Users);
+    print("Successfully loaded Users")
+    print("Cards.sql is being loaded...")
     cur.execute(read_Cards);
+    print("Successfully loaded Cards")
+    print("User_Rides.sql is being loaded...")
     cur.execute(read_User_Rides);
+    print("Successfully loaded User_Rides")
+    print("Card_Rides.sql is being loaded...")
     cur.execute(read_Card_Rides);
+    print("Successfully loaded Card_Rides")
 
     conn.commit()
     cur.close()
@@ -68,7 +90,9 @@ def import_buildings():
     cur.execute("CREATE TABLE if not exists Buildings ( Building_id INT NOT NULL, Entrance_id INT NOT NULL, Entrance VARCHAR(255), PRIMARY KEY (Building_id), CONSTRAINT buildings_fk1 FOREIGN KEY (Entrance_id) REFERENCES Entrances (Entrance_id) );");
     #cur.execute(dis_triggers)
     #cur.execute(en_triggers)
+    print("Buildings.sql is being loaded...")
     cur.execute(read_Buildings);
+    print("Successfully loaded Buildings")
     conn.commit()
     cur.close()
     conn.close()
@@ -77,8 +101,8 @@ def import_buildings():
 
 if __name__ == '__main__':
     # Case1: Load All Data
-    # init_table()
-    # import_all()
+    init_table()
+    import_all()
     # Case2: Load Building Data
     # import_buildings()
     pass
