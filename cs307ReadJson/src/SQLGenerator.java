@@ -15,6 +15,7 @@ import java.io.FileWriter;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
 
+
 public class SQLGenerator {
     public static void main(String[] args) {
         // Cards
@@ -131,6 +132,7 @@ public class SQLGenerator {
                     CREATE TABLE if not exists Line_details (
                         Line_id int not null,
                         Station_id int not null,
+                        line_num int not null,
                         primary key (Line_id, Station_id),
                         constraint Line_detail_fk1 foreign key (Line_id) references Lines(Line_id),
                         constraint Line_detail_fk2 foreign key (Station_id) references Stations(Station_id)
@@ -239,11 +241,12 @@ public class SQLGenerator {
                 JSONArray station_array = JSONArray.parseArray(Lines.getString("stations"));
                 writerLines.append("INSERT INTO Lines(Line_id, start_time, end_time, intro, mileage, color, first_opening, url) ");
                 writerLines.append("VALUES(" + line_id + ", '" + start_time + "', '" + end_time + "', '" + intro + "', '" + mileage + "', '" + color + "', '" + first_opening + "', '" + url + "');\n");
+                int station_countt = 0;
                 for (Object station_array_info : station_array) {
                     if (!stationsMap.containsKey(station_array_info.toString())) continue;
                     int stationid = stationsMap.get(station_array_info.toString());
-                    writerLinesDetail.append("INSERT INTO Line_details(Line_id, Station_id) ");
-                    writerLinesDetail.append("VALUES(" + line_id + ", " + stationid + ");\n");
+                    writerLinesDetail.append("INSERT INTO Line_details(Line_id, Station_id, line_num) ");
+                    writerLinesDetail.append("VALUES(" + line_id + ", " + stationid + ", " + (++station_countt) + ");\n");
                 }
             }
 
