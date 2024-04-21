@@ -1,9 +1,3 @@
-CREATE TABLE if not exists Cards (
-    Card_number varchar(10) primary key not null,
-    Money float,
-    Create_time varchar(255)
-);
-
 INSERT INTO Cards(Card_number, Money, Create_time)  VALUES('885543819', 772.430000, '2024-01-30T20:48:33');
 INSERT INTO Cards(Card_number, Money, Create_time)  VALUES('882132348', 524.330000, '2021-02-10T15:21:36');
 INSERT INTO Cards(Card_number, Money, Create_time)  VALUES('882612277', 516.440000, '2023-11-18T16:37:38');

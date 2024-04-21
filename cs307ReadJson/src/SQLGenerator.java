@@ -18,58 +18,12 @@ import java.io.PrintStream;
 
 public class SQLGenerator {
     public static void main(String[] args) {
-        // Cards
-        List<Cards> cards = readJsonArray(Path.of("resource/cards.json"), Cards.class);
-        try {
-            File file = new File("../Process_Data/Cards.sql");
-            System.setOut(new PrintStream(new FileOutputStream(file)));
-            System.out.println("""
-                    CREATE TABLE if not exists Cards (
-                        Card_number varchar(10) primary key not null,
-                        Money float,
-                        Create_time varchar(255)
-                    );
-                    """);
-            for (Cards c : cards) {
-                System.out.print("INSERT INTO Cards(Card_number, Money, Create_time) ");
-                System.out.printf(
-                        " VALUES('%s', %f, '%s');\n",
-                        c.getCode(), c.getMoney(), c.getCreate_time());
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        // Users
-        List<Passengers> users = readJsonArray(Path.of("resource/passenger.json"), Passengers.class);
-        try {
-            File file = new File("../Process_Data/Passengers.sql");
-            System.setOut(new PrintStream(new FileOutputStream(file)));
-            System.out.println("""
-                    CREATE TABLE if not exists Users (
-                        User_id_number varchar(18) primary key not null,
-                        Name varchar(10) not null,
-                        Phone varchar(11),
-                        Gender char(1),
-                        District varchar(18),
-                        constraint Users_uq1 unique (Name, Phone)
-                    );
-                    """);
-            for (Passengers p : users) {
-                System.out.print("INSERT INTO Users(User_id_number, Name, Phone, Gender, District) ");
-                System.out.printf(
-                        " VALUES('%s', '%s', '%s', '%c', '%s');\n",
-                        p.getId_number(), p.getName(), p.getPhone(), p.getGender(), p.getDistrict());
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
         // Lines, stations and all related
         HashMap<String, Integer> stationsMap = new HashMap<>();
+        File fileDefinition = new File("../Process_Data/Definition.sql");
+        FileWriter writerDefinition;
         try {
             File
-                    fileDefinition = new File("../Process_Data/Definition.sql"),
                     fileStations = new File("../Process_Data/Stations.sql"),
                     fileEntrances = new File("../Process_Data/Entrance.sql"),
                     fileBuildings = new File("../Process_Data/Buildings.sql"),
@@ -77,68 +31,14 @@ public class SQLGenerator {
                     fileBusLine = new File("../Process_Data/Bus_Line.sql"),
                     fileLines = new File("../Process_Data/Lines.sql"),
                     fileLinesDetail = new File("../Process_Data/Lines_Detail.sql");
-
-            FileWriter writerStations = new FileWriter(fileStations), writerEntrances = new FileWriter(fileEntrances), writerBuildings = new FileWriter(fileBuildings), writerBusName = new FileWriter(fileBusName), writerBusLine = new FileWriter(fileBusLine), writerLines = new FileWriter(fileLines), writerLinesDetail = new FileWriter(fileLinesDetail), writerDefinition = new FileWriter(fileDefinition);
+            writerDefinition = new FileWriter(fileDefinition);
+            FileWriter writerStations = new FileWriter(fileStations), writerEntrances = new FileWriter(fileEntrances), writerBuildings = new FileWriter(fileBuildings), writerBusName = new FileWriter(fileBusName), writerBusLine = new FileWriter(fileBusLine), writerLines = new FileWriter(fileLines), writerLinesDetail = new FileWriter(fileLinesDetail);
 
             String LinesStrings = Files.readString(Path.of("resource/lines.json"));
             JSONObject LineObject = JSONObject.parseObject(LinesStrings, Feature.OrderedField);
 
             String jsonStrings = Files.readString(Path.of("resource/stations.json"));
             JSONObject jsonObject = JSONObject.parseObject(jsonStrings, Feature.OrderedField);
-
-            writerDefinition.append("""
-                    CREATE TABLE if not exists Stations (
-                        Station_id    int not null primary key,
-                        English_name  varchar(900) not null,
-                        Chinese_name  varchar(900) not null,
-                        District      varchar(900) not null,
-                        Introduction  text,
-                        constraint Stations_uq1 unique (English_name, Chinese_name)
-                    );
-                    """);
-            writerDefinition.append("""
-                    CREATE TABLE if not exists Buildings (
-                        Building_id INT NOT NULL,
-                        Entrance_id INT NOT NULL,
-                        Entrance VARCHAR(255),
-                        PRIMARY KEY (Building_id),
-                        CONSTRAINT buildings_fk1 FOREIGN KEY (Entrance_id) REFERENCES Entrances (Entrance_id)
-                    );
-                    """);
-            writerDefinition.append("""
-                    CREATE TABLE if not exists Bus_Lines (
-                        BusLine_id int primary key,
-                        BusName_id int not null,
-                        BusLine varchar(50) not null,
-                        constraint Bus_Lines_fk1 foreign key(BusName_id) references Bus_Names(BusName_id)
-                    );
-                    """);
-            writerDefinition.append("""
-                    CREATE TABLE if not exists Bus_Names (
-                        BusName_id int primary key,
-                        Entrance_id int not null,
-                        BusName varchar(255),
-                        constraint Bus_Names_connection1 foreign key(Entrance_id) references entrances(Entrance_id)
-                    );
-                    """);
-            writerDefinition.append("""
-                    CREATE TABLE if not exists Entrances (
-                        Entrance_id int primary key not null,
-                        station_id int not null,
-                        Entrance_name varchar(255),
-                        constraint Entrances_fk1 foreign key (station_id) references stations(station_id)
-                    );
-                    """);
-            writerDefinition.append("""
-                    CREATE TABLE if not exists Line_details (
-                        Line_id int not null,
-                        Station_id int not null,
-                        line_num int not null,
-                        primary key (Line_id, Station_id),
-                        constraint Line_detail_fk1 foreign key (Line_id) references Lines(Line_id),
-                        constraint Line_detail_fk2 foreign key (Station_id) references Stations(Station_id)
-                    );
-                    """);
             writerDefinition.append("""
                     CREATE TABLE if not exists Lines (
                         Line_id int
@@ -154,7 +54,59 @@ public class SQLGenerator {
                         constraint Lines_uq2 unique (start_time, end_time, mileage, color, first_opening, url)
                     );
                     """);
-
+            writerDefinition.append("""
+                    CREATE TABLE if not exists Stations (
+                        Station_id    int not null primary key,
+                        English_name  varchar(900) not null,
+                        Chinese_name  varchar(900) not null,
+                        District      varchar(900) not null,
+                        Introduction  text,
+                        constraint Stations_uq1 unique (English_name, Chinese_name)
+                    );
+                    """);
+            writerDefinition.append("""
+                    CREATE TABLE if not exists Line_details (
+                        Line_id int not null,
+                        Station_id int not null,
+                        line_num int not null,
+                        primary key (Line_id, Station_id),
+                        constraint Line_detail_fk1 foreign key (Line_id) references Lines(Line_id),
+                        constraint Line_detail_fk2 foreign key (Station_id) references Stations(Station_id)
+                    );
+                    """);
+            writerDefinition.append("""
+                    CREATE TABLE if not exists Entrances (
+                        Entrance_id int primary key not null,
+                        station_id int not null,
+                        Entrance_name varchar(255),
+                        constraint Entrances_fk1 foreign key (station_id) references stations(station_id)
+                    );
+                    """);
+            writerDefinition.append("""
+                    CREATE TABLE if not exists Buildings (
+                        Building_id INT NOT NULL,
+                        Entrance_id INT NOT NULL,
+                        Entrance VARCHAR(255),
+                        PRIMARY KEY (Building_id),
+                        CONSTRAINT buildings_fk1 FOREIGN KEY (Entrance_id) REFERENCES Entrances (Entrance_id)
+                    );
+                    """);
+            writerDefinition.append("""
+                    CREATE TABLE if not exists Bus_Names (
+                        BusName_id int primary key,
+                        Entrance_id int not null,
+                        BusName varchar(255),
+                        constraint Bus_Names_connection1 foreign key(Entrance_id) references entrances(Entrance_id)
+                    );
+                    """);
+            writerDefinition.append("""
+                    CREATE TABLE if not exists Bus_Lines (
+                        BusLine_id int primary key,
+                        BusName_id int not null,
+                        BusLine varchar(50) not null,
+                        constraint Bus_Lines_fk1 foreign key(BusName_id) references Bus_Names(BusName_id)
+                    );
+                    """);
             int station_count = 0, entrance_count = 0, building_count = 0, bus_count = 0, bus_line_count = 0, bus_countt = 0;
             for (String stationName : jsonObject.keySet()) {
                 JSONObject station = jsonObject.getJSONObject(stationName);
@@ -258,7 +210,7 @@ public class SQLGenerator {
             writerBusLine.close();
             writerLines.close();
             writerLinesDetail.close();
-            writerDefinition.close();
+
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -271,7 +223,7 @@ public class SQLGenerator {
                     fileUser = new File("../Process_Data/User_Rides.sql"),
                     fileCard = new File("../Process_Data/Card_Rides.sql");
             FileWriter writerUser = new FileWriter(fileUser), writerCard = new FileWriter(fileCard);
-            writerUser.append("""
+            writerDefinition.append("""
                     CREATE TABLE if not exists User_Rides (
                         Ride_id int primary key not null,
                         User_id varchar(18) not null,
@@ -286,7 +238,7 @@ public class SQLGenerator {
                         constraint User_Rides_fk3 foreign key(User_id) references Users(user_id_number)
                     );
                     """);
-            writerCard.append("""
+            writerDefinition.append("""
                     CREATE TABLE if not exists Card_Rides (
                         Ride_id int primary key not null,
                         Card_id varchar(10) not null,
@@ -318,6 +270,53 @@ public class SQLGenerator {
             writerCard.close();
         } catch (IOException e) {
             throw new RuntimeException(e);
+        }
+        // Cards
+        List<Cards> cards = readJsonArray(Path.of("resource/cards.json"), Cards.class);
+        try {
+            File file = new File("../Process_Data/Cards.sql");
+            System.setOut(new PrintStream(new FileOutputStream(file)));
+            writerDefinition.append("""
+                    CREATE TABLE if not exists Cards (
+                        Card_number varchar(10) primary key not null,
+                        Money float,
+                        Create_time varchar(255)
+                    );
+                    """);
+            for (Cards c : cards) {
+                System.out.print("INSERT INTO Cards(Card_number, Money, Create_time) ");
+                System.out.printf(
+                        " VALUES('%s', %f, '%s');\n",
+                        c.getCode(), c.getMoney(), c.getCreate_time());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        // Users
+        List<Passengers> users = readJsonArray(Path.of("resource/passenger.json"), Passengers.class);
+        try {
+            File file = new File("../Process_Data/Users.sql");
+            System.setOut(new PrintStream(new FileOutputStream(file)));
+            writerDefinition.append("""
+                    CREATE TABLE if not exists Users (
+                        User_id_number varchar(18) primary key not null,
+                        Name varchar(10) not null,
+                        Phone varchar(11),
+                        Gender char(1),
+                        District varchar(18),
+                        constraint Users_uq1 unique (Name, Phone)
+                    );
+                    """);
+            for (Passengers p : users) {
+                System.out.print("INSERT INTO Users(User_id_number, Name, Phone, Gender, District) ");
+                System.out.printf(
+                        " VALUES('%s', '%s', '%s', '%c', '%s');\n",
+                        p.getId_number(), p.getName(), p.getPhone(), p.getGender(), p.getDistrict());
+            }
+            writerDefinition.close();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
