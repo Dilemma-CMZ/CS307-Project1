@@ -3,6 +3,7 @@ import psycopg2
 from psycopg2 import sql 
 from datetime import datetime, timedelta
 import time
+import concurrent.futures
 
 init_sql = open('../Process_Data/Definition.sql').read()
 dis_triggers = open('../Process_Data/disable_triggers.sql').read()
@@ -32,6 +33,40 @@ def init_table():
     init_conn.commit()
     init_cur.close()
     init_conn.close()
+
+def execute_sql_file(filename):
+    sql = open(filename).read()
+    conn = psycopg2.connect(host=db[0], port=db[1], user=db[2], password=db[3], database=db[4])
+    cur = conn.cursor()
+    cur.execute(sql)
+    conn.commit()
+    cur.close()
+    conn.close()
+
+def multi_thread_import():
+    start_time = time.time()
+
+    sql_files = [
+        '../Process_Data/Definition.sql',
+        '../Process_Data/disable_triggers.sql',
+        '../Process_Data/Buildings.sql',
+        '../Process_Data/Bus_Line.sql',
+        '../Process_Data/Bus_Name.sql',
+        '../Process_Data/Card_Rides.sql',
+        '../Process_Data/Cards.sql',
+        '../Process_Data/Entrance.sql',
+        '../Process_Data/Lines_Detail.sql',
+        '../Process_Data/Lines.sql',
+        '../Process_Data/Stations.sql',
+        '../Process_Data/User_Rides.sql',
+        '../Process_Data/Users.sql',
+    ]
+
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+        print("Importing all data...")
+        executor.map(execute_sql_file, sql_files)
+
+    print(f"Imported all in {time.time() - start_time} seconds")
 
 def import_all():
     start_time = time.time()
@@ -101,8 +136,10 @@ def import_buildings():
 
 if __name__ == '__main__':
     # Case1: Load All Data
-    init_table()
-    import_all()
+    #init_table()
+    #import_all()
     # Case2: Load Building Data
     # import_buildings()
+    # Case3: Multi-thread Import All Data with disable triggers
+    multi_thread_import();
     pass
