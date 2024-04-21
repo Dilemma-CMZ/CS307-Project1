@@ -1,3 +1,14 @@
+DROP TABLE IF EXISTS Card_Rides;
+DROP TABLE IF EXISTS User_Rides;
+DROP TABLE IF EXISTS Cards;
+DROP TABLE IF EXISTS Users;
+DROP TABLE IF EXISTS Bus_Lines;
+DROP TABLE IF EXISTS Bus_Names;
+DROP TABLE IF EXISTS Buildings;
+DROP TABLE IF EXISTS Entrances;
+DROP TABLE IF EXISTS Line_details;
+DROP TABLE IF EXISTS Stations;
+DROP TABLE IF EXISTS Lines;
 CREATE TABLE if not exists Lines (
     Line_id int
     constraint Lines_uq1 unique,
