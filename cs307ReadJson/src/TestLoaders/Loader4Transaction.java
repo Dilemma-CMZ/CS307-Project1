@@ -1,4 +1,4 @@
-package Loaders;
+package TestLoaders;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -9,8 +9,8 @@ import java.sql.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class Loader5Batch {
-    private static final int BATCH_SIZE = 1000;
+public class Loader4Transaction {
+
     private static Connection con = null;
     private static PreparedStatement stmt = null;
 
@@ -27,7 +27,7 @@ public class Loader5Batch {
             if (con != null) {
                 System.out.println("Successfully connected to the database "
                         + prop.getProperty("database") + " as " + prop.getProperty("user"));
-                con.setAutoCommit(false);
+                con.setAutoCommit(false); // turn off auto-commit: transaction mode
             }
         } catch (SQLException e) {
             System.err.println("Database connection failed");
@@ -80,7 +80,7 @@ public class Loader5Batch {
         }
     }
 
-    static String regex = "INSERT INTO Buildings\\(Building_id, Entrance_id, Entrance\\) VALUES\\((\\d+), (\\d+), ('[a-zA-Z0-9 \\u4e00-\\u9fff\\u3000-\\u303F\\uff00-\\uffef/\\p{Punct}]+')\\);";
+    static String regex = "INSERT INTO Buildings\\(Building_id, Entrance_id, Entrance\\) VALUES\\((\\d+), (\\d+), '([a-zA-Z0-9 \\u4e00-\\u9fff\\u3000-\\u303F\\uff00-\\uffef/\\p{Punct}]+)'\\);";
     static Pattern pattern = Pattern.compile(regex);
 
     private static void loadData(String line) {
@@ -130,37 +130,28 @@ public class Loader5Batch {
         clearDataInTable();
         closeDB();
 
-
         int cnt = 0;
+
         long start = System.currentTimeMillis();
         openDB(prop);
         setPrepareStatement();
-        try {
-            for (String line : lines) {
-                loadData(line);//do insert command
-                if (cnt % BATCH_SIZE == 0) {
-                    stmt.executeBatch();
-                    System.out.println("insert " + BATCH_SIZE + " data successfully!");
-                    stmt.clearBatch();
-                }
-                cnt++;
+        for (String line : lines) {
+            loadData(line);//do insert command
+            cnt++;
+            if (cnt % 1000 == 0) {
+                System.out.println("insert " + 1000 + " data successfully!");
             }
-
-            if (cnt % BATCH_SIZE != 0) {
-                stmt.executeBatch();
-                System.out.println("insert " + cnt % BATCH_SIZE + " data successfully!");
-
-            }
-            con.commit();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
         }
 
+        try {
+            con.commit();
+        } catch (SQLException ex) {
+            throw new RuntimeException(ex);
+        }
         closeDB();
         long end = System.currentTimeMillis();
         System.out.println(cnt + " records successfully loaded");
         System.out.println("Loading speed : " + (cnt * 1000L) / (end - start) + " records/s");
-
     }
 }
 

@@ -1,4 +1,4 @@
-package Loaders;
+package TestLoaders;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -9,8 +9,7 @@ import java.sql.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class Loader4Transaction {
-
+public class Loader3Prepare {
     private static Connection con = null;
     private static PreparedStatement stmt = null;
 
@@ -27,7 +26,6 @@ public class Loader4Transaction {
             if (con != null) {
                 System.out.println("Successfully connected to the database "
                         + prop.getProperty("database") + " as " + prop.getProperty("user"));
-                con.setAutoCommit(false); // turn off auto-commit: transaction mode
             }
         } catch (SQLException e) {
             System.err.println("Database connection failed");
@@ -80,7 +78,7 @@ public class Loader4Transaction {
         }
     }
 
-    static String regex = "INSERT INTO Buildings\\(Building_id, Entrance_id, Entrance\\) VALUES\\((\\d+), (\\d+), ('[a-zA-Z0-9 \\u4e00-\\u9fff\\u3000-\\u303F\\uff00-\\uffef/\\p{Punct}]+')\\);";
+    static String regex = "INSERT INTO Buildings\\(Building_id, Entrance_id, Entrance\\) VALUES\\((\\d+), (\\d+), '([a-zA-Z0-9 \\u4e00-\\u9fff\\u3000-\\u303F\\uff00-\\uffef/\\p{Punct}]+)'\\);";
     static Pattern pattern = Pattern.compile(regex);
 
     private static void loadData(String line) {
@@ -103,7 +101,6 @@ public class Loader4Transaction {
             try {
                 stmt0 = con.createStatement();
                 stmt0.executeUpdate("drop table if exists Buildings;");
-                con.commit();
                 stmt0.executeUpdate("""
                          CREATE TABLE if not exists Buildings (
                              Building_id INT NOT NULL,
@@ -113,7 +110,6 @@ public class Loader4Transaction {
                              CONSTRAINT buildings_fk1 FOREIGN KEY (Entrance_id) REFERENCES Entrances (Entrance_id)
                          );
                         """);
-                con.commit();
                 stmt0.close();
             } catch (SQLException ex) {
                 throw new RuntimeException(ex);
@@ -143,11 +139,6 @@ public class Loader4Transaction {
             }
         }
 
-        try {
-            con.commit();
-        } catch (SQLException ex) {
-            throw new RuntimeException(ex);
-        }
         closeDB();
         long end = System.currentTimeMillis();
         System.out.println(cnt + " records successfully loaded");

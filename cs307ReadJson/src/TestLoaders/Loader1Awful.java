@@ -1,4 +1,4 @@
-package Loaders;
+package TestLoaders;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -6,12 +6,10 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Properties;
 import java.sql.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-public class Loader3Prepare {
+public class Loader1Awful {
     private static Connection con = null;
-    private static PreparedStatement stmt = null;
+    private static Statement stmt = null;
 
     private static void openDB(Properties prop) {
         try {
@@ -23,25 +21,13 @@ public class Loader3Prepare {
         String url = "jdbc:postgresql://" + prop.getProperty("host") + "/" + prop.getProperty("database");
         try {
             con = DriverManager.getConnection(url, prop);
-            if (con != null) {
+            /*if (con != null) {
                 System.out.println("Successfully connected to the database "
                         + prop.getProperty("database") + " as " + prop.getProperty("user"));
-            }
+            }*/
         } catch (SQLException e) {
             System.err.println("Database connection failed");
             System.err.println(e.getMessage());
-            System.exit(1);
-        }
-    }
-
-    public static void setPrepareStatement() {
-        try {
-            stmt = con.prepareStatement("INSERT INTO Buildings(Building_id, Entrance_id, Entrance) " +
-                    "VALUES(?, ?, ?);");
-        } catch (SQLException e) {
-            System.err.println("Insert statement failed");
-            System.err.println(e.getMessage());
-            closeDB();
             System.exit(1);
         }
     }
@@ -78,20 +64,14 @@ public class Loader3Prepare {
         }
     }
 
-    static String regex = "INSERT INTO Buildings\\(Building_id, Entrance_id, Entrance\\) VALUES\\((\\d+), (\\d+), ('[a-zA-Z0-9 \\u4e00-\\u9fff\\u3000-\\u303F\\uff00-\\uffef/\\p{Punct}]+')\\);";
-    static Pattern pattern = Pattern.compile(regex);
-
     private static void loadData(String line) {
-        Matcher matcher = pattern.matcher(line);
-        if (matcher.matches() && con != null) {
-            try {
-                stmt.setInt(1, Integer.parseInt(matcher.group(1)));
-                stmt.setInt(2, Integer.parseInt(matcher.group(2)));
-                stmt.setString(3, matcher.group(3));
-                stmt.executeUpdate();
-            } catch (SQLException ex) {
-                throw new RuntimeException(ex);
+        try {
+            if (con != null) {
+                stmt = con.createStatement();
+                stmt.execute(line);
             }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -129,17 +109,17 @@ public class Loader3Prepare {
         int cnt = 0;
 
         long start = System.currentTimeMillis();
-        openDB(prop);
-        setPrepareStatement();
         for (String line : lines) {
+            openDB(prop);
             loadData(line);//do insert command
+            closeDB();
+
             cnt++;
             if (cnt % 1000 == 0) {
                 System.out.println("insert " + 1000 + " data successfully!");
             }
         }
 
-        closeDB();
         long end = System.currentTimeMillis();
         System.out.println(cnt + " records successfully loaded");
         System.out.println("Loading speed : " + (cnt * 1000L) / (end - start) + " records/s");
