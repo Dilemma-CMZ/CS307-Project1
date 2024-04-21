@@ -135,7 +135,7 @@ public class SQLGenerator {
                         for (String busline : buslines) {
                             String BusLine = busline.replace(" ", "");
                             if (BusLine.equals("")) continue;
-                            writerBusLine.append("INSERT INTO Bus_Line(BusLine_id, BusName_id, BusLine)");
+                            writerBusLine.append("INSERT INTO Bus_Lines(BusLine_id, BusName_id, BusLine)");
                             writerBusLine.append(" VALUES(" + (++bus_line_count) + ", " + bus_count + ", '" + BusLine.trim().replace(" ", "") + "');\n");
                         }
                     }
@@ -159,7 +159,7 @@ public class SQLGenerator {
 
                 // Entrances
                 for (String entrance : Entrance_map.keySet()) {
-                    writerEntrances.append("INSERT INTO Entrance(Entrance_id, Station_id, Entrance)");
+                    writerEntrances.append("INSERT INTO Entrances(Entrance_id, Station_id, Entrance_name)");
                     writerEntrances.append(" VALUES(" + Entrance_map.get(entrance) + ", " + station_count + ", '" + entrance.trim().replace(" ", "") + "');\n");
                 }
 
@@ -173,7 +173,7 @@ public class SQLGenerator {
                     for (Object busOutObject : busOutInfoArray) {
                         JSONObject busOutInfo = (JSONObject) busOutObject;
                         String[] buslines = busOutInfo.getString("busInfo").split("、|\\s|,|\\.|，|。|;|；");
-                        writerBusName.append("INSERT INTO Bus_Name(BusName_id, Entrance_id, BusName)");
+                        writerBusName.append("INSERT INTO Bus_Names(BusName_id, Entrance_id, BusName)");
                         writerBusName.append(" VALUES(" + (++bus_countt) + ", " + Entrance_map.get(entrance) + ", '" + busOutInfo.getString("busName").trim() + "');\n");
                     }
                 }
@@ -213,6 +213,52 @@ public class SQLGenerator {
 
         } catch (IOException e) {
             throw new RuntimeException(e);
+        }
+        // Cards
+        List<Cards> cards = readJsonArray(Path.of("resource/cards.json"), Cards.class);
+        try {
+            File file = new File("../Process_Data/Cards.sql");
+            System.setOut(new PrintStream(new FileOutputStream(file)));
+            writerDefinition.append("""
+                    CREATE TABLE if not exists Cards (
+                        Card_number varchar(10) primary key not null,
+                        Money float,
+                        Create_time varchar(255)
+                    );
+                    """);
+            for (Cards c : cards) {
+                System.out.print("INSERT INTO Cards(Card_number, Money, Create_time) ");
+                System.out.printf(
+                        " VALUES('%s', %f, '%s');\n",
+                        c.getCode(), c.getMoney(), c.getCreate_time());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        // Users
+        List<Passengers> users = readJsonArray(Path.of("resource/passenger.json"), Passengers.class);
+        try {
+            File file = new File("../Process_Data/Users.sql");
+            System.setOut(new PrintStream(new FileOutputStream(file)));
+            writerDefinition.append("""
+                    CREATE TABLE if not exists Users (
+                        User_id_number varchar(18) primary key not null,
+                        Name varchar(10) not null,
+                        Phone varchar(11),
+                        Gender char(1),
+                        District varchar(18),
+                        constraint Users_uq1 unique (Name, Phone)
+                    );
+                    """);
+            for (Passengers p : users) {
+                System.out.print("INSERT INTO Users(User_id_number, Name, Phone, Gender, District) ");
+                System.out.printf(
+                        " VALUES('%s', '%s', '%s', '%c', '%s');\n",
+                        p.getId_number(), p.getName(), p.getPhone(), p.getGender(), p.getDistrict());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
         // Rides
@@ -268,55 +314,9 @@ public class SQLGenerator {
             }
             writerUser.close();
             writerCard.close();
+            writerDefinition.close();
         } catch (IOException e) {
             throw new RuntimeException(e);
-        }
-        // Cards
-        List<Cards> cards = readJsonArray(Path.of("resource/cards.json"), Cards.class);
-        try {
-            File file = new File("../Process_Data/Cards.sql");
-            System.setOut(new PrintStream(new FileOutputStream(file)));
-            writerDefinition.append("""
-                    CREATE TABLE if not exists Cards (
-                        Card_number varchar(10) primary key not null,
-                        Money float,
-                        Create_time varchar(255)
-                    );
-                    """);
-            for (Cards c : cards) {
-                System.out.print("INSERT INTO Cards(Card_number, Money, Create_time) ");
-                System.out.printf(
-                        " VALUES('%s', %f, '%s');\n",
-                        c.getCode(), c.getMoney(), c.getCreate_time());
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        // Users
-        List<Passengers> users = readJsonArray(Path.of("resource/passenger.json"), Passengers.class);
-        try {
-            File file = new File("../Process_Data/Users.sql");
-            System.setOut(new PrintStream(new FileOutputStream(file)));
-            writerDefinition.append("""
-                    CREATE TABLE if not exists Users (
-                        User_id_number varchar(18) primary key not null,
-                        Name varchar(10) not null,
-                        Phone varchar(11),
-                        Gender char(1),
-                        District varchar(18),
-                        constraint Users_uq1 unique (Name, Phone)
-                    );
-                    """);
-            for (Passengers p : users) {
-                System.out.print("INSERT INTO Users(User_id_number, Name, Phone, Gender, District) ");
-                System.out.printf(
-                        " VALUES('%s', '%s', '%s', '%c', '%s');\n",
-                        p.getId_number(), p.getName(), p.getPhone(), p.getGender(), p.getDistrict());
-            }
-            writerDefinition.close();
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 

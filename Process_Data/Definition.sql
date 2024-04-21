@@ -52,6 +52,19 @@ CREATE TABLE if not exists Bus_Lines (
     BusLine varchar(50) not null,
     constraint Bus_Lines_fk1 foreign key(BusName_id) references Bus_Names(BusName_id)
 );
+CREATE TABLE if not exists Cards (
+    Card_number varchar(10) primary key not null,
+    Money float,
+    Create_time varchar(255)
+);
+CREATE TABLE if not exists Users (
+    User_id_number varchar(18) primary key not null,
+    Name varchar(10) not null,
+    Phone varchar(11),
+    Gender char(1),
+    District varchar(18),
+    constraint Users_uq1 unique (Name, Phone)
+);
 CREATE TABLE if not exists User_Rides (
     Ride_id int primary key not null,
     User_id varchar(18) not null,
@@ -77,17 +90,4 @@ CREATE TABLE if not exists Card_Rides (
     constraint Card_Rides_fk1 foreign key(From_station) references Stations(station_id),
     constraint Card_Rides_fk2 foreign key(To_station) references Stations(station_id),
     constraint Card_Rides_fk3 foreign key(Card_id) references cards(card_number)
-);
-CREATE TABLE if not exists Cards (
-    Card_number varchar(10) primary key not null,
-    Money float,
-    Create_time varchar(255)
-);
-CREATE TABLE if not exists Users (
-    User_id_number varchar(18) primary key not null,
-    Name varchar(10) not null,
-    Phone varchar(11),
-    Gender char(1),
-    District varchar(18),
-    constraint Users_uq1 unique (Name, Phone)
 );
