@@ -10,7 +10,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Loader5Batch {
-    private static final int BATCH_SIZE = 1000;
+    private static final int BATCH_SIZE = 1200;
     private static Connection con = null;
     private static PreparedStatement stmt = null;
 
@@ -121,6 +121,25 @@ public class Loader5Batch {
         }
     }
 
+    private static void operateTriggers(String mode) {
+        try {
+            Statement stmt0;
+            List<String> list;
+            if (mode.equals("disable")) {
+                list = Files.readAllLines(Path.of("Process_Data/disable_triggers.sql"));
+            } else {
+                list = Files.readAllLines(Path.of("Process_Data/enable_triggers.sql"));
+            }
+            for (String line : list) {
+                stmt0 = con.createStatement();
+                stmt0.executeUpdate(line);
+                con.commit();
+            }
+        } catch (IOException | SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public static void main(String[] args) {
         Properties prop = loadDBUser();
         List<String> lines = loadSQLFile();
@@ -128,8 +147,8 @@ public class Loader5Batch {
         // Empty target table
         openDB(prop);
         clearDataInTable();
+        operateTriggers("disable");
         closeDB();
-
 
         int cnt = 0;
         long start = System.currentTimeMillis();
@@ -155,6 +174,8 @@ public class Loader5Batch {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+
+        operateTriggers("enable");
 
         closeDB();
         long end = System.currentTimeMillis();
