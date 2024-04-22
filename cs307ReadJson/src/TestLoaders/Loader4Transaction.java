@@ -16,12 +16,12 @@ public class Loader4Transaction {
 
     private static void openDB(Properties prop) {
         try {
-            Class.forName("org.postgresql.Driver");
+            Class.forName(LoaderControl.loader);
         } catch (Exception e) {
             System.err.println("Cannot find the Postgres driver. Check CLASSPATH.");
             System.exit(1);
         }
-        String url = "jdbc:postgresql://" + prop.getProperty("host") + "/" + prop.getProperty("database");
+        String url = LoaderControl.url_header + prop.getProperty("host") + "/" + prop.getProperty("database");
         try {
             con = DriverManager.getConnection(url, prop);
             if (con != null) {
@@ -102,17 +102,9 @@ public class Loader4Transaction {
         if (con != null) {
             try {
                 stmt0 = con.createStatement();
-                stmt0.executeUpdate("drop table if exists Buildings;");
+                stmt0.executeUpdate(LoaderControl.dropper);
                 con.commit();
-                stmt0.executeUpdate("""
-                         CREATE TABLE if not exists Buildings (
-                             Building_id INT NOT NULL,
-                             Entrance_id INT NOT NULL,
-                             Entrance VARCHAR(255),
-                             PRIMARY KEY (Building_id),
-                             CONSTRAINT buildings_fk1 FOREIGN KEY (Entrance_id) REFERENCES Entrances (Entrance_id)
-                         );
-                        """);
+                stmt0.executeUpdate(LoaderControl.creator);
                 con.commit();
                 stmt0.close();
             } catch (SQLException ex) {

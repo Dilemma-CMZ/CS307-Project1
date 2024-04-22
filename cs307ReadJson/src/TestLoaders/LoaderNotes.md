@@ -7,10 +7,11 @@ Here we use the loader to load the Buildings.sql.
 - MacBook Pro 14-inch 2021
 - Apple M1 Pro, 16GB RAM, 512GB SSD
 - macOS Monterey 12.4
-- PostgreSQL 16
 - Intellij IDEA 2023.1.5
 
-### Loader Awful
+### PostgreSQL 16
+
+#### Loader Awful
 
 ```agsl
 insert 1000 data successfully!
@@ -21,7 +22,7 @@ insert 1000 data successfully!
 Loading speed : 99 records/s
 ```
 
-### Loader Connect
+#### Loader Connect
 
 ```agsl
 Successfully connected to the database project1 as postgres
@@ -34,7 +35,7 @@ insert 1000 data successfully!
 Loading speed : 1153 records/s
 ```
 
-### Loader Prepare
+#### Loader Prepare
 
 ```agsl
 Successfully connected to the database project1 as postgres
@@ -47,7 +48,7 @@ insert 1000 data successfully!
 Loading speed : 6072 records/s
 ```
 
-### Loader Transaction
+#### Loader Transaction
 
 ```agsl
 Successfully connected to the database project1 as postgres
@@ -60,7 +61,7 @@ insert 1000 data successfully!
 Loading speed : 16570 records/s
 ```
 
-### Loader Batch
+#### Loader Batch
 
 Batch Size 1000.
 
@@ -77,7 +78,7 @@ insert 706 data successfully!
 Loading speed : 16989 records/s
 ```
 
-### Loader Batch with Trigger Disabled
+#### Loader Batch with Trigger Disabled
 
 1. Batch Size 1200
 
@@ -164,7 +165,7 @@ insert 306 data successfully!
 Loading speed : 22516 records/s
 ```
 
-### Loader Multi Threads, also Batched, and with Trigger Disabled
+#### Loader Multi Threads, also Batched, and with Trigger Disabled
 
 1. 3 threads, Batch Size 400
 
@@ -374,4 +375,203 @@ No. 2 thread, insert 106 data successfully!
 No. 4 thread, insert 106 data successfully!
 5 threads, use all together 104ms
 Loading speed : 45250 records/s
+```
+
+### MySQL 8
+
+#### Loader Awful
+
+```agsl
+insert 1000 data successfully!
+insert 1000 data successfully!
+insert 1000 data successfully!
+insert 1000 data successfully!
+4706 records successfully loaded
+Loading speed : 123 records/s
+```
+
+#### Loader Connect
+
+```agsl
+Successfully connected to the database project1 as root
+Successfully connected to the database project1 as root
+insert 1000 data successfully!
+insert 1000 data successfully!
+insert 1000 data successfully!
+insert 1000 data successfully!
+4706 records successfully loaded
+Loading speed : 4964 records/s
+```
+
+#### Loader Prepare
+
+```agsl
+Successfully connected to the database project1 as root
+Successfully connected to the database project1 as root
+insert 1000 data successfully!
+insert 1000 data successfully!
+insert 1000 data successfully!
+insert 1000 data successfully!
+4706 records successfully loaded
+Loading speed : 6111 records/s
+```
+
+#### Loader Transaction
+
+```agsl
+Successfully connected to the database project1 as root
+Successfully connected to the database project1 as root
+insert 1000 data successfully!
+insert 1000 data successfully!
+insert 1000 data successfully!
+insert 1000 data successfully!
+4706 records successfully loaded
+Loading speed : 14987 records/s
+```
+
+#### Loader Batch
+
+Batch Size 1000.
+
+```agsl
+Successfully connected to the database project1 as root
+Successfully connected to the database project1 as root
+insert 1000 data successfully!
+insert 1000 data successfully!
+insert 1000 data successfully!
+insert 1000 data successfully!
+insert 1000 data successfully!
+insert 706 data successfully!
+4706 records successfully loaded
+Loading speed : 14614 records/s
+```
+
+#### Loader Batch with Trigger Disabled
+
+Batch Size 1000.
+
+```agsl
+Successfully connected to the database project1 as root
+Successfully connected to the database project1 as root
+insert 1000 data successfully!
+insert 1000 data successfully!
+insert 1000 data successfully!
+insert 1000 data successfully!
+insert 1000 data successfully!
+insert 706 data successfully!
+4706 records successfully loaded
+Loading speed : 14752 records/s
+```
+
+#### Loader Multi Threads, also Batched, and with Trigger Disabled
+
+1. 5 threads, batch size 400.
+
+```agsl
+Connection 0, successfully connected to the database project1 as root
+Connection 1, successfully connected to the database project1 as root
+Connection 2, successfully connected to the database project1 as root
+Connection 3, successfully connected to the database project1 as root
+Connection 4, successfully connected to the database project1 as root
+No. 4 thread, insert 400 data successfully!
+No. 3 thread, insert 400 data successfully!
+No. 0 thread, insert 400 data successfully!
+No. 1 thread, insert 400 data successfully!
+No. 2 thread, insert 400 data successfully!
+No. 3 thread, insert 400 data successfully!
+No. 4 thread, insert 400 data successfully!
+No. 0 thread, insert 400 data successfully!
+No. 2 thread, insert 400 data successfully!
+No. 1 thread, insert 400 data successfully!
+No. 3 thread, insert 306 data successfully!
+No. 4 thread, insert 306 data successfully!
+No. 0 thread, insert 306 data successfully!
+No. 2 thread, insert 306 data successfully!
+No. 1 thread, insert 306 data successfully!
+5 threads, use all together 145ms
+Loading speed : 32455 records/s
+```
+
+2. 7 threads, batch size 400.
+
+```agsl
+Connection 0, successfully connected to the database project1 as root
+Connection 1, successfully connected to the database project1 as root
+Connection 2, successfully connected to the database project1 as root
+Connection 3, successfully connected to the database project1 as root
+Connection 4, successfully connected to the database project1 as root
+Connection 5, successfully connected to the database project1 as root
+Connection 6, successfully connected to the database project1 as root
+No. 0 thread, insert 400 data successfully!
+No. 2 thread, insert 400 data successfully!
+No. 3 thread, insert 400 data successfully!
+No. 1 thread, insert 400 data successfully!
+No. 6 thread, insert 400 data successfully!
+No. 4 thread, insert 400 data successfully!
+No. 5 thread, insert 400 data successfully!
+No. 2 thread, insert 306 data successfully!
+No. 0 thread, insert 306 data successfully!
+No. 3 thread, insert 306 data successfully!
+No. 1 thread, insert 306 data successfully!
+No. 6 thread, insert 306 data successfully!
+No. 4 thread, insert 306 data successfully!
+No. 5 thread, insert 306 data successfully!
+7 threads, use all together 146ms
+Loading speed : 32233 records/s
+```
+
+3. 9 threads, batch size 400.
+
+```agsl
+Connection 0, successfully connected to the database project1 as root
+Connection 1, successfully connected to the database project1 as root
+Connection 2, successfully connected to the database project1 as root
+Connection 3, successfully connected to the database project1 as root
+Connection 4, successfully connected to the database project1 as root
+Connection 5, successfully connected to the database project1 as root
+Connection 6, successfully connected to the database project1 as root
+Connection 7, successfully connected to the database project1 as root
+Connection 8, successfully connected to the database project1 as root
+No. 3 thread, insert 400 data successfully!
+No. 2 thread, insert 400 data successfully!
+No. 8 thread, insert 400 data successfully!
+No. 1 thread, insert 400 data successfully!
+No. 3 thread, insert 306 data successfully!
+No. 5 thread, insert 400 data successfully!
+No. 0 thread, insert 400 data successfully!
+No. 6 thread, insert 400 data successfully!
+No. 4 thread, insert 400 data successfully!
+No. 1 thread, insert 306 data successfully!
+No. 8 thread, insert 306 data successfully!
+No. 2 thread, insert 306 data successfully!
+No. 7 thread, insert 400 data successfully!
+No. 5 thread, insert 306 data successfully!
+No. 6 thread, insert 306 data successfully!
+No. 4 thread, insert 306 data successfully!
+No. 7 thread, insert 306 data successfully!
+No. 0 thread, insert 306 data successfully!
+9 threads, use all together 142ms
+Loading speed : 33141 records/s
+```
+
+4. 5 threads, batch size 800.
+
+```agsl
+Connection 0, successfully connected to the database project1 as root
+Connection 1, successfully connected to the database project1 as root
+Connection 2, successfully connected to the database project1 as root
+Connection 3, successfully connected to the database project1 as root
+Connection 4, successfully connected to the database project1 as root
+No. 1 thread, insert 800 data successfully!
+No. 2 thread, insert 800 data successfully!
+No. 3 thread, insert 800 data successfully!
+No. 4 thread, insert 800 data successfully!
+No. 0 thread, insert 800 data successfully!
+No. 1 thread, insert 706 data successfully!
+No. 4 thread, insert 706 data successfully!
+No. 3 thread, insert 706 data successfully!
+No. 2 thread, insert 706 data successfully!
+No. 0 thread, insert 706 data successfully!
+5 threads, use all together 140ms
+Loading speed : 33614 records/s
 ```

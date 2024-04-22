@@ -13,18 +13,18 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Loader6Threads {
-    private static final int BATCH_SIZE = 200, THREAD_NUM = 5;
+    private static final int BATCH_SIZE = 800, THREAD_NUM = 5;
     private static Connection[] con = new Connection[THREAD_NUM];
     private static final PreparedStatement[] stmt = new PreparedStatement[THREAD_NUM];
 
     private static void openDB(Properties prop) {
         try {
-            Class.forName("org.postgresql.Driver");
+            Class.forName(LoaderControl.loader);
         } catch (Exception e) {
             System.err.println("Cannot find the Postgres driver. Check CLASSPATH.");
             System.exit(1);
         }
-        String url = "jdbc:postgresql://" + prop.getProperty("host") + "/" + prop.getProperty("database");
+        String url = LoaderControl.url_header + prop.getProperty("host") + "/" + prop.getProperty("database");
         try {
             for (int i = 0; i < THREAD_NUM; i++) {
                 if (con != null) {
@@ -94,17 +94,9 @@ public class Loader6Threads {
         if (con != null) {
             try {
                 stmt0 = con[0].createStatement();
-                stmt0.executeUpdate("drop table if exists Buildings;");
+                stmt0.executeUpdate(LoaderControl.dropper);
                 con[0].commit();
-                stmt0.executeUpdate("""
-                         CREATE TABLE if not exists Buildings (
-                             Building_id INT NOT NULL,
-                             Entrance_id INT NOT NULL,
-                             Entrance VARCHAR(255),
-                             PRIMARY KEY (Building_id),
-                             CONSTRAINT buildings_fk1 FOREIGN KEY (Entrance_id) REFERENCES Entrances (Entrance_id)
-                         );
-                        """);
+                stmt0.executeUpdate(LoaderControl.creator);
                 con[0].commit();
                 stmt0.close();
             } catch (SQLException ex) {
@@ -118,9 +110,9 @@ public class Loader6Threads {
             Statement stmt0;
             List<String> list;
             if (mode.equals("disable")) {
-                list = Files.readAllLines(Path.of("Process_Data/disable_triggers.sql"));
+                list = Files.readAllLines(Path.of("Process_Data/" + LoaderControl.disableTrigger + ".sql"));
             } else {
-                list = Files.readAllLines(Path.of("Process_Data/enable_triggers.sql"));
+                list = Files.readAllLines(Path.of("Process_Data/" + LoaderControl.enableTrigger + ".sql"));
             }
             for (String line : list) {
                 stmt0 = con[0].createStatement();

@@ -121,7 +121,7 @@ def import_buildings():
 
     conn = psycopg2.connect(host=db[0], port=db[1], user=db[2], password=db[3], database=db[4])
     cur = conn.cursor()
-    cur.execute("DROP TABLE IF EXISTS Buildings;")
+    cur.execute(LoaderControl.dropper)
     cur.execute("CREATE TABLE if not exists Buildings ( Building_id INT NOT NULL, Entrance_id INT NOT NULL, Entrance VARCHAR(255), PRIMARY KEY (Building_id), CONSTRAINT buildings_fk1 FOREIGN KEY (Entrance_id) REFERENCES Entrances (Entrance_id) );");
     #cur.execute(dis_triggers)
     #cur.execute(en_triggers)

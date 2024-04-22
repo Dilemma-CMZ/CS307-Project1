@@ -1,24 +1,27 @@
-package TestLoaders;
-
-import java.io.*;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.List;
 import java.util.Properties;
-import java.sql.*;
 
-public class Loader2Connect {
+public class FullLoaderMySQL {
     private static Connection con = null;
     private static Statement stmt = null;
 
     private static void openDB(Properties prop) {
         try {
-            Class.forName(LoaderControl.loader);
+            Class.forName("com.mysql.cj.jdbc.Driver");
         } catch (Exception e) {
             System.err.println("Cannot find the Postgres driver. Check CLASSPATH.");
             System.exit(1);
         }
-        String url = LoaderControl.url_header + prop.getProperty("host") + "/" + prop.getProperty("database");
+        String url = "jdbc:mysql://" + prop.getProperty("host") + "/" + prop.getProperty("database");
         try {
             con = DriverManager.getConnection(url, prop);
             if (con != null) {
@@ -56,9 +59,9 @@ public class Loader2Connect {
         }
     }
 
-    private static List<String> loadSQLFile() {
+    private static List<String> loadSQLFile(String name) {
         try {
-            return Files.readAllLines(Path.of("Process_Data/Buildings.sql"));
+            return Files.readAllLines(Path.of("Process_Data/" + name + ".sql"));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -76,12 +79,14 @@ public class Loader2Connect {
     }
 
     public static void clearDataInTable() {
+        List<String> lines = loadSQLFile("Definition_MySQL");
         Statement stmt0;
         if (con != null) {
             try {
                 stmt0 = con.createStatement();
-                stmt0.executeUpdate(LoaderControl.dropper);
-                stmt0.executeUpdate(LoaderControl.creator);
+                for (String line : lines) {
+                    stmt0.execute(line);
+                }
                 stmt0.close();
             } catch (SQLException ex) {
                 throw new RuntimeException(ex);
@@ -91,29 +96,33 @@ public class Loader2Connect {
 
     public static void main(String[] args) {
         Properties prop = loadDBUser();
-        List<String> lines = loadSQLFile();
+
+        String[] sqls = new String[]{
+                "Lines", "Stations", "Lines_Detail", "Entrance", "Buildings", "Bus_Name", "Bus_Line", "Users", "Cards", "Card_Rides", "User_Rides"
+        };
 
         // Empty target table
-        openDB(prop);
-        clearDataInTable();
-        closeDB();
-
-        int cnt = 0;
-
         long start = System.currentTimeMillis();
         openDB(prop);
-        for (String line : lines) {
-            loadData(line);//do insert command
-            cnt++;
-            if (cnt % 1000 == 0) {
-                System.out.println("insert " + 1000 + " data successfully!");
+        clearDataInTable();
+
+        int allCnt = 0;
+        for (String sql : sqls) {
+            List<String> lines = loadSQLFile(sql);
+            int cnt = 0;
+            for (String line : lines) {
+                loadData(line.replace(" Lines(", " `Lines`("));//do insert command
+                cnt++;
             }
+            allCnt += cnt;
+            System.out.println(sql + ".sql: insert " + cnt + " data successfully!");
         }
 
         closeDB();
         long end = System.currentTimeMillis();
-        System.out.println(cnt + " records successfully loaded");
-        System.out.println("Loading speed : " + (cnt * 1000L) / (end - start) + " records/s");
+        System.out.println(allCnt + " records successfully loaded");
+        System.out.println("Loading speed : " + (allCnt * 1000L) / (end - start) + " records/s");
+        System.out.println("Loading time : " + ((float) (end - start)) / 1000f + " s");
     }
 }
 

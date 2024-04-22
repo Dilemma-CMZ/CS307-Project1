@@ -1,0 +1,12 @@
+use project1;
+Alter Table `Lines` DISABLE keys;
+Alter Table Stations DISABLE keys;
+Alter Table Line_details DISABLE keys;
+Alter Table Entrances DISABLE keys;
+Alter Table Buildings DISABLE keys;
+Alter Table Bus_Names DISABLE keys;
+Alter Table Bus_Lines DISABLE keys;
+Alter Table Cards DISABLE keys;
+Alter Table Users DISABLE keys;
+Alter Table User_Rides DISABLE keys;
+Alter Table Card_Rides DISABLE keys;
