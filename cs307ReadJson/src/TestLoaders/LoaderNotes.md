@@ -1069,3 +1069,103 @@ No. 10 thread, insert 306 data successfully!
 15 threads, use all together 53ms
 Loading speed : 88792 records/s
 ```
+
+## Tested on Linux
+
+- MacBook Pro 14-inch 2021
+- Apple M1 Pro, 16GB RAM, 512GB SSD
+- OpenEuler 22.03 LTS on Parallel Desktop 18
+- Provide 4 cores, 4 GB RAM for virtual machine
+- Intellij IDEA 2023.1.5
+
+### OpenGauss 2.1.0-5.oe2203
+
+#### Full Loader
+
+```agsl
+Successfully connected to the database project1 as r
+Lines.sql: insert 16 data successfully!
+Stations.sql: insert 306 data successfully!
+Lines_Detail.sql: insert 359 data successfully!
+Entrance.sql: insert 1291 data successfully!
+Buildings.sql: insert 4706 data successfully!
+Bus_Name.sql: insert 906 data successfully!
+Bus_Line.sql: insert 7220 data successfully!
+Users.sql: insert 10000 data successfully!
+Cards.sql: insert 10000 data successfully!
+Card_Rides.sql: insert 36497 data successfully!
+User_Rides.sql: insert 63503 data successfully!
+Closing SSH Connection
+134804 records successfully loaded
+Loading speed : 1395 records/s
+Loading time : 96.626 s
+```
+
+#### Full Loader with triggers disabled
+
+```agsl
+Successfully connected to the database project1 as r
+disable_triggers.sql: insert 12 data successfully!
+Lines.sql: insert 16 data successfully!
+Stations.sql: insert 306 data successfully!
+Lines_Detail.sql: insert 359 data successfully!
+Entrance.sql: insert 1291 data successfully!
+Buildings.sql: insert 4706 data successfully!
+Bus_Name.sql: insert 906 data successfully!
+Bus_Line.sql: insert 7220 data successfully!
+Users.sql: insert 10000 data successfully!
+Cards.sql: insert 10000 data successfully!
+Card_Rides.sql: insert 36497 data successfully!
+User_Rides.sql: insert 63503 data successfully!
+enable_triggers.sql: insert 12 data successfully!
+Closing SSH Connection
+134828 records successfully loaded
+Loading speed : 1459 records/s
+Loading time : 92.392 s
+```
+
+### Postgres 13.2
+
+#### Full Loader
+
+```agsl
+Successfully connected to the database project1 as postgres
+Lines.sql: insert 16 data successfully!
+Stations.sql: insert 306 data successfully!
+Lines_Detail.sql: insert 359 data successfully!
+Entrance.sql: insert 1291 data successfully!
+Buildings.sql: insert 4706 data successfully!
+Bus_Name.sql: insert 906 data successfully!
+Bus_Line.sql: insert 7220 data successfully!
+Users.sql: insert 10000 data successfully!
+Cards.sql: insert 10000 data successfully!
+Card_Rides.sql: insert 36497 data successfully!
+User_Rides.sql: insert 63503 data successfully!
+Closing SSH Connection
+134804 records successfully loaded
+Loading speed : 1357 records/s
+Loading time : 99.334 s
+```
+
+### Full loader with triggers disabled
+
+```agsl
+Successfully connected to the database project1 as postgres
+disable_triggers.sql: insert 12 data successfully!
+Lines.sql: insert 16 data successfully!
+Stations.sql: insert 306 data successfully!
+Lines_Detail.sql: insert 359 data successfully!
+Entrance.sql: insert 1291 data successfully!
+Buildings.sql: insert 4706 data successfully!
+Bus_Name.sql: insert 906 data successfully!
+Bus_Line.sql: insert 7220 data successfully!
+Users.sql: insert 10000 data successfully!
+Cards.sql: insert 10000 data successfully!
+Card_Rides.sql: insert 36497 data successfully!
+User_Rides.sql: insert 63503 data successfully!
+enable_triggers.sql: insert 12 data successfully!
+Closing SSH Connection
+134828 records successfully loaded
+Loading speed : 1411 records/s
+Loading time : 95.513 s
+```

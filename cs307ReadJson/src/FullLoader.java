@@ -1,3 +1,7 @@
+import com.jcraft.jsch.JSch;
+import com.jcraft.jsch.JSchException;
+import com.jcraft.jsch.Session;
+
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -12,9 +16,26 @@ import java.util.Properties;
 
 public class FullLoader {
     private static Connection con = null;
+    private static Session session = null;
     private static Statement stmt = null;
 
     private static void openDB(Properties prop) {
+        JSch jsch = new JSch();
+
+        try {
+            if (prop.getProperty("ssh").equals("true")) {
+                session = jsch.getSession(prop.getProperty("ssh-user"), prop.getProperty("ssh-host"), Integer.parseInt(prop.getProperty("ssh-port")));
+                session.setPassword(prop.getProperty("ssh-password"));
+                session.setConfig("StrictHostKeyChecking", "no");
+                session.connect();
+                session.setPortForwardingL(7654, "localhost", 5432);
+            }
+        } catch (JSchException e) {
+            System.err.println("Failed to establish SSH connection");
+            e.printStackTrace();
+            System.exit(1);
+        }
+
         try {
             Class.forName("org.postgresql.Driver");
         } catch (Exception e) {
@@ -94,6 +115,13 @@ public class FullLoader {
         }
     }
 
+    public static void CloseSSHConnection(Session session) {
+        if (session != null && session.isConnected()) {
+            System.out.println("Closing SSH Connection");
+            session.disconnect();
+        }
+    }
+
     public static void main(String[] args) {
         Properties prop = loadDBUser();
 
@@ -121,6 +149,7 @@ public class FullLoader {
         }
 
         closeDB();
+        CloseSSHConnection(session);
         long end = System.currentTimeMillis();
         System.out.println(allCnt + " records successfully loaded");
         System.out.println("Loading speed : " + (allCnt * 1000L) / (end - start) + " records/s");

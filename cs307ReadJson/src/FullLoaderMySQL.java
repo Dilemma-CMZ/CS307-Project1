@@ -98,7 +98,9 @@ public class FullLoaderMySQL {
         Properties prop = loadDBUser();
 
         String[] sqls = new String[]{
-                "Lines", "Stations", "Lines_Detail", "Entrance", "Buildings", "Bus_Name", "Bus_Line", "Users", "Cards", "Card_Rides", "User_Rides"
+                "disable_triggers_MySQL",
+                "Lines", "Stations", "Lines_Detail", "Entrance", "Buildings", "Bus_Name", "Bus_Line", "Users", "Cards", "Card_Rides", "User_Rides",
+                "enable_triggers_MySQL"
         };
 
         // Empty target table
