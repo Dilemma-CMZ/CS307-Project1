@@ -71,7 +71,7 @@ public class SQLGenerator {
                     CREATE TABLE if not exists Bus_Names ( BusName_id int primary key, Entrance_id int not null, BusName varchar(255), constraint Bus_Names_connection1 foreign key(Entrance_id) references entrances(Entrance_id) );
                     """);
             writerDefinition.append("""
-                    CREATE TABLE if not exists Bus_Lines ( BusLine_id int primary key, BusName_id int not null, BusLine varchar(50) not null, constraint Bus_Lines_fk1 foreign key(BusName_id) references Bus_Names(BusName_id) );
+                    CREATE TABLE if not exists Bus_Lines ( BusLine_id int primary key, BusName_id int not null, BusLine varchar(255) not null, constraint Bus_Lines_fk1 foreign key(BusName_id) references Bus_Names(BusName_id) );
                     """);
             int station_count = 0, entrance_count = 0, building_count = 0, bus_count = 0, bus_line_count = 0, bus_countt = 0;
             for (String stationName : jsonObject.keySet()) {
@@ -162,8 +162,8 @@ public class SQLGenerator {
                 writerLines.append("VALUES(" + line_id + ", '" + start_time + "', '" + end_time + "', '" + intro + "', '" + mileage + "', '" + color + "', '" + first_opening + "', '" + url + "');\n");
                 int station_countt = 0;
                 for (Object station_array_info : station_array) {
-                    if (!stationsMap.containsKey(station_array_info.toString())) continue;
-                    int stationid = stationsMap.get(station_array_info.toString());
+                    if (!stationsMap.containsKey(station_array_info.toString().replace("'", "''"))) continue;
+                    int stationid = stationsMap.get(station_array_info.toString().replace("'", "''"));
                     writerLinesDetail.append("INSERT INTO Line_details(Line_id, Station_id, line_num) ");
                     writerLinesDetail.append("VALUES(" + line_id + ", " + stationid + ", " + (++station_countt) + ");\n");
                 }
@@ -204,7 +204,7 @@ public class SQLGenerator {
             File file = new File("../Process_Data/Users.sql");
             System.setOut(new PrintStream(new FileOutputStream(file)));
             writerDefinition.append("""
-                    CREATE TABLE if not exists Users ( User_id_number varchar(18) primary key not null, Name varchar(10) not null, Phone varchar(11), Gender char(1), District varchar(18), constraint Users_uq1 unique (Name, Phone) );
+                    CREATE TABLE if not exists Users ( User_id_number varchar(18) primary key not null, Name varchar(20) not null, Phone varchar(11), Gender char(1), District varchar(18), constraint Users_uq1 unique (Name, Phone) );
                     """);
             for (Passengers p : users) {
                 System.out.print("INSERT INTO Users(User_id_number, Name, Phone, Gender, District) ");
