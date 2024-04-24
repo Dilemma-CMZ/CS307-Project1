@@ -184,7 +184,7 @@
       {
         "busOutInfo": [
           {
-            "busInfo": "101路 B681路（过铁路桥距离G出入口约300米）",
+            "busInfo": "101路 B681路（过铁路桥，距离G出入口约300米）",
             "busName": "中医院一门诊"
           }
         ],
@@ -8443,7 +8443,7 @@
     "chinese_name": "深云"
   },
   "Nonglin": {
-    "district": "/西丽线",
+    "district": "福田区",
     "bus_info": [
       {
         "busOutInfo": [

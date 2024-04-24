@@ -38,14 +38,22 @@ from users
 where district = 'Chinese Taiwan';
 
 -- Q4 List the buses, buildings, or landmarks near a specific station exit.
-select entrances.station_id, bus_names.entrance_id, bus_names
-from bus_names
-         join entrances on bus_names.entrance_id = entrances.entrance_id
-where entrances.station_id = 1;
+-- Q4(1) List the buses near a specific station exit.
+with bus_info as (select entrances.station_id, entrances.entrance_id, busname_id, bus_names.busname
+                  from bus_names
+                           join entrances on bus_names.entrance_id = entrances.entrance_id
+                  where entrances.entrance_id = 11),
+     step2 as (select entrance_id, station_id, busname, busline
+               from bus_info
+                        join bus_lines on bus_info.busname_id = bus_lines.busname_id)
+select entrance_id, stations.station_id, english_name, chinese_name, busname, busline
+from stations
+         join step2 on step2.station_id = stations.station_id;
+-- Q4(2) List the buildings / landmarks near a specific station exit.
 select entrances.station_id, buildings.entrance_id, buildings.entrance as building
 from buildings
          join entrances on buildings.entrance_id = entrances.entrance_id
-where entrances.station_id = 1;
+where entrances.entrance_id = 10;
 
 -- Q5 List all information about a specific passenger's journey, including passenger name, entry station, exit station, date, and time.
 select subbb.name, subbb.from_station, ss.chinese_name as to_station, subbb.start_time, subbb.end_time
