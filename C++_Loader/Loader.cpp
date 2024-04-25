@@ -6,6 +6,7 @@
 #include <chrono>
 #include <vector>
 #include <mutex>
+int tot = 0;
 std::string files[] = {"../Process_Data/Definition.sql", "../Process_Data/Lines.sql", "../Process_Data/Stations.sql", 
 "../Process_Data/Lines_Detail.sql", "../Process_Data/Entrance.sql", "../Process_Data/Buildings.sql", "../Process_Data/Bus_Name.sql", 
 "../Process_Data/Bus_Line.sql", "../Process_Data/Users.sql", "../Process_Data/Cards.sql", "../Process_Data/User_Rides.sql",
@@ -21,8 +22,10 @@ void load_data(pqxx::connection& C, const std::string& file) {
 
     // Read the SQL file line by line
     std::string line;
+
     while (std::getline(sql_file, line)) {
         // Start a transaction
+        tot++;
         pqxx::work W(C);
         // Execute the SQL command
         W.exec(line);
@@ -93,8 +96,9 @@ inline void multi_thread() {
     }
 }
 int main() {
-    normal_load();
+    //normal_load();
     multi_thread();
+    printf("tot = %d\n", tot);
    return 0;
 }
 //g++ -std=c++17 -o program Loader.cpp -L/System/Volumes/Data/opt/homebrew/Cellar/libpqxx/7.9.0/lib -lpqxx 编译命令

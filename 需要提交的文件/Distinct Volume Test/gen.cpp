@@ -41,8 +41,8 @@ std::string random_Introduction(int len) {
 }
 int main() {
     srand(time(0));
-    freopen("stations_n=10000.sql", "w", stdout);
-    int n = 10000;
+    freopen("stations_n=50000.sql", "w", stdout);
+    int n = 50000;
     for (int i = 1; i <= n; ++i) {
         int station_id = i;
         std::string English_name = random_English_name(20);

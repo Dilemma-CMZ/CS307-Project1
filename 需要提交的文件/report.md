@@ -29,7 +29,7 @@
 ### 项目源码文件夹结构：（需要修改）
 
 ```shell
-├─report.md
+├─report.pdf
 ├─DDL.sql
 ├─C++_Loader.cpp
 └─Python_Loader.py
@@ -46,7 +46,7 @@
 │  └─
 ```
 
-- [report.md](report.md) : 项目报告
+- [report.pdf](report.pdf) : 项目报告
 - [DDL.sql](DDL.sql) : 每个库的基本信息
 - [C++_Loader.cpp](C++_Loader.cpp) : C++导入数据源代码
 - [Python_Loader.cpp](Python_Loader.cpp) : Python导入数据源代码
@@ -186,10 +186,32 @@
 
 1. Try to **optimize your script**, and find **more than one ways** to import data, and provide a comparative analysis of the computational **efficiencies** between these ways.
 2. Try to import data across multiple systems (e.g., Windows, MacOS, Linux).
-3. Try to import data using various programming languages (e.g., Java, Python, C++).
+3. Try to import data using various programming languages (e.g., Java, Python, C++).((所有的测试都建立在Apple M1 Pro芯片))
+| Language     | Total_Time（Total instruction = 134842） | Velocity（Instruction per second） |
+| ---------------- | ------ | ----------- |
+| C++ | 28.428 s | 4743 |
+| Python | 3.1017 s | 43473 |
+| Java | |  |
 4. Experiment with other databases; we recommend use **OpenGauss**.
-5. Try to import data with different data volumes.
-6. Other advancements
-   1. 多线程优化以及效率对比
 
+5. Try to import data with different data volumes.
+| N（总指令数） | 总时间 | 每秒插入指令数量 |
+| ---- | ---- |---- |
+| 1w | 0.44 s | 27272 |
+| 5w | 2.45 s | 20408 |
+| 10w | 5.53 s | 18083 |
+| 25w | 13.58 s | 18409 |
+| 50w | 24.14 s | 20712 |
+
+   
+
+
+6. Other advancements
+   1. 多线程优化以及效率对比(所有的测试都建立在Apple M1 Pro芯片)
+
+   | Language | Initial Time | Optimized time | Multiple of optimization |
+   | -------- | ------------ | -------------- | ------------------------ |
+   | C++      | 28.428 s     | 25.169 s       | 1.13                     |
+   | Python   | 3.1017 s     | 1.3472 s       | 2.30                     |
+   | Java     |              |                |                          |
 

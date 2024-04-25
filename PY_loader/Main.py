@@ -73,7 +73,7 @@ def import_all():
 
     conn = psycopg2.connect(host=db[0], port=db[1], user=db[2], password=db[3], database=db[4])
     cur = conn.cursor()
-
+    sum = 0
     #cur.execute(dis_triggers)
     #cur.execute(en_triggers)
     print("Lines.sql is being loaded...")
@@ -115,6 +115,8 @@ def import_all():
     conn.close()
     end_time = time.time()
     print(end_time - start_time)
+    print(f"Total rows imported: {sum}")
+    print(f"Instructions per second: {sum / (end_time - start_time)}")
 
 def import_buildings():
     start_time = time.time()
@@ -136,10 +138,10 @@ def import_buildings():
 
 if __name__ == '__main__':
     # Case1: Load All Data
-    init_table()
-    import_all()
+    #init_table()
+    #import_all()
     # Case2: Load Building Data
     # import_buildings()
     # Case3: Multi-thread Import All Data with disable triggers
-    #multi_thread_import();
+    multi_thread_import();
     pass
