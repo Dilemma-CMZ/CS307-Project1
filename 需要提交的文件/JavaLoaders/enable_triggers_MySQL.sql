@@ -1,0 +1,12 @@
+use project1;
+Alter Table `Lines` Enable keys;
+Alter Table Stations Enable keys;
+Alter Table Line_details Enable keys;
+Alter Table Entrances Enable keys;
+Alter Table Buildings Enable keys;
+Alter Table Bus_Names Enable keys;
+Alter Table Bus_Lines Enable keys;
+Alter Table Cards Enable keys;
+Alter Table Users Enable keys;
+Alter Table User_Rides Enable keys;
+Alter Table Card_Rides Enable keys;

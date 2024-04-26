@@ -13,7 +13,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Loader6Threads {
-    private static final int BATCH_SIZE = 800, THREAD_NUM = 5;
+    private static final int BATCH_SIZE = 1000, THREAD_NUM = 5;
     private static Connection[] con = new Connection[THREAD_NUM];
     private static final PreparedStatement[] stmt = new PreparedStatement[THREAD_NUM];
 
