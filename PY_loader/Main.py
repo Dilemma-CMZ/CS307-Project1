@@ -138,10 +138,10 @@ def import_buildings():
 
 if __name__ == '__main__':
     # Case1: Load All Data
-    #init_table()
-    #import_all()
+    init_table()
+    import_all()
     # Case2: Load Building Data
     # import_buildings()
     # Case3: Multi-thread Import All Data with disable triggers
-    multi_thread_import();
+    #multi_thread_import();
     pass

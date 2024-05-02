@@ -150,6 +150,7 @@ public class SQLGenerator {
             for (String linename : LineObject.keySet()) {
                 JSONObject Lines = LineObject.getJSONObject(linename);
                 ++line_id;
+                String line_name = linename.replace("'", "''");
                 String start_time = Lines.getString("start_time");
                 String end_time = Lines.getString("end_time");
                 String intro = Lines.getString("intro");
@@ -158,8 +159,8 @@ public class SQLGenerator {
                 String first_opening = Lines.getString("first_opening");
                 String url = Lines.getString("url");
                 JSONArray station_array = JSONArray.parseArray(Lines.getString("stations"));
-                writerLines.append("INSERT INTO Lines(Line_id, start_time, end_time, intro, mileage, color, first_opening, url) ");
-                writerLines.append("VALUES(" + line_id + ", '" + start_time + "', '" + end_time + "', '" + intro + "', '" + mileage + "', '" + color + "', '" + first_opening + "', '" + url + "');\n");
+                writerLines.append("INSERT INTO Lines(Line_id, line_name, start_time, end_time, intro, mileage, color, first_opening, url) ");
+                writerLines.append("VALUES(" + line_id + ", '" + line_name + "', '" + start_time + "', '" + end_time + "', '" + intro + "', '" + mileage + "', '" + color + "', '" + first_opening + "', '" + url + "');\n");
                 int station_countt = 0;
                 for (Object station_array_info : station_array) {
                     if (!stationsMap.containsKey(station_array_info.toString().replace("'", "''"))) continue;
