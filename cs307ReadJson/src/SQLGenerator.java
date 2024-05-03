@@ -53,10 +53,10 @@ public class SQLGenerator {
                             DROP TABLE IF EXISTS Lines;
                     """);
             writerDefinition.append("""
-                    CREATE TABLE if not exists Lines (Line_id serial not null, line_name varchar(10) not null, start_time varchar(10) not null, end_time varchar(10) not null, intro text, mileage varchar(10) not null, color varchar(10) not null, first_opening date not null, url varchar(100) not null, primary key(Line_id), constraint Lines_uq2 unique (start_time, end_time, mileage, color, first_opening, url) );
+                    CREATE TABLE if not exists Lines (Line_id serial not null, line_name varchar(10) not null, business_carriage int, start_time varchar(10) not null, end_time varchar(10) not null, intro text, mileage varchar(10) not null, color varchar(10) not null, first_opening date not null, url varchar(100) not null, primary key(Line_id), constraint Lines_uq2 unique (start_time, end_time, mileage, color, first_opening, url) );
                     """);
             writerDefinition.append("""
-                    CREATE TABLE if not exists Stations ( Station_id serial not null primary key, English_name  varchar(900) not null, Chinese_name  varchar(900) not null, District      varchar(900) not null, Introduction  text, constraint Stations_uq1 unique (English_name, Chinese_name) );
+                    CREATE TABLE if not exists Stations ( Station_id serial not null primary key, English_name  varchar(900) not null, Chinese_name  varchar(900) not null, District      varchar(900) not null, Status varchar(10), Introduction  text, constraint Stations_uq1 unique (English_name, Chinese_name) );
                     """);
             writerDefinition.append("""
                     CREATE TABLE if not exists Line_details ( Line_id int not null, Station_id int not null, line_num int not null, primary key (Line_id, Station_id), constraint Line_detail_fk1 foreign key (Line_id) references Lines(Line_id), constraint Line_detail_fk2 foreign key (Station_id) references Stations(Station_id) );
@@ -76,11 +76,11 @@ public class SQLGenerator {
             int station_count = 0, entrance_count = 0, building_count = 0, bus_count = 0, bus_line_count = 0, bus_countt = 0;
             for (String stationName : jsonObject.keySet()) {
                 JSONObject station = jsonObject.getJSONObject(stationName);
-                writerStations.append("INSERT INTO stations(station_id, English_name, Chinese_name, District, Introduction) ");
+                writerStations.append("INSERT INTO stations(station_id, English_name, Chinese_name, District, Status, Introduction) ");
                 String StationName = stationName.replace("'", "''");
                 String Introduction = station.getString("intro").replace("'", "''");
                 writerStations.append(
-                        "VALUES(" + (++station_count) + ", '" + StationName.replaceAll("\n", "") + "', '" + station.getString("chinese_name").replaceAll("\n", "") + "', '" + station.getString("district") + "', '" + Introduction + "');\n");
+                        "VALUES(" + (++station_count) + ", '" + StationName.replaceAll("\n", "") + "', '" + station.getString("chinese_name").replaceAll("\n", "") + "', '" + station.getString("district") + "', '" + "opening" + "', '" + Introduction + "');\n");
                 stationsMap.put(StationName, station_count);
 
                 // Bus Info
@@ -159,8 +159,10 @@ public class SQLGenerator {
                 String first_opening = Lines.getString("first_opening");
                 String url = Lines.getString("url");
                 JSONArray station_array = JSONArray.parseArray(Lines.getString("stations"));
-                writerLines.append("INSERT INTO Lines(Line_id, line_name, start_time, end_time, intro, mileage, color, first_opening, url) ");
-                writerLines.append("VALUES(" + line_id + ", '" + line_name + "', '" + start_time + "', '" + end_time + "', '" + intro + "', '" + mileage + "', '" + color + "', '" + first_opening + "', '" + url + "');\n");
+                writerLines.append("INSERT INTO Lines(Line_id, line_name, business_carriage ,start_time, end_time, intro, mileage, color, first_opening, url) ");
+                if (line_id == 11)
+                    writerLines.append("VALUES(" + line_id + ", '" + line_name + "', " + 1 + ", '" + start_time + "', '" + end_time + "', '" + intro + "', '" + mileage + "', '" + color + "', '" + first_opening + "', '" + url + "');\n"); else
+                    writerLines.append("VALUES(" + line_id + ", '" + line_name + "', " + 0 + ", '" + start_time + "', '" + end_time + "', '" + intro + "', '" + mileage + "', '" + color + "', '" + first_opening + "', '" + url + "');\n");
                 int station_countt = 0;
                 for (Object station_array_info : station_array) {
                     if (!stationsMap.containsKey(station_array_info.toString().replace("'", "''"))) continue;
@@ -226,22 +228,22 @@ public class SQLGenerator {
                     fileCard = new File("../Process_Data/Card_Rides.sql");
             FileWriter writerUser = new FileWriter(fileUser), writerCard = new FileWriter(fileCard);
             writerDefinition.append("""
-                    CREATE TABLE if not exists User_Rides ( Ride_id serial not null, User_id varchar(18) not null, on_the_ride int not null, From_station int, To_station int, Price float, Start_time varchar(255), End_time varchar(255), constraint User_Rides_uq1 unique (Ride_id, User_id), constraint User_Rides_fk1 foreign key(From_station) references Stations(station_id), constraint User_Rides_fk2 foreign key(To_station) references Stations(station_id), constraint User_Rides_fk3 foreign key(User_id) references Users(user_id_number) );
+                    CREATE TABLE if not exists User_Rides ( Ride_id serial not null, User_id varchar(18) not null, business_carriage int, on_the_ride int not null, From_station int, To_station int, Price float, Start_time varchar(255), End_time varchar(255), constraint User_Rides_uq1 unique (Ride_id, User_id), constraint User_Rides_fk1 foreign key(From_station) references Stations(station_id), constraint User_Rides_fk2 foreign key(To_station) references Stations(station_id), constraint User_Rides_fk3 foreign key(User_id) references Users(user_id_number) );
                     """);
             writerDefinition.append("""
-                    CREATE TABLE if not exists Card_Rides ( Ride_id serial not null, Card_id varchar(10) not null, on_the_ride int not null, From_station int, To_station int, Price float, Start_time varchar(255), End_time varchar(255), constraint Card_Rides_uq1 unique (Ride_id, Card_id), constraint Card_Rides_fk1 foreign key(From_station) references Stations(station_id), constraint Card_Rides_fk2 foreign key(To_station) references Stations(station_id), constraint Card_Rides_fk3 foreign key(Card_id) references cards(card_number) );
+                    CREATE TABLE if not exists Card_Rides ( Ride_id serial not null, Card_id varchar(10) not null, business_carriage int, on_the_ride int not null, From_station int, To_station int, Price float, Start_time varchar(255), End_time varchar(255), constraint Card_Rides_uq1 unique (Ride_id, Card_id), constraint Card_Rides_fk1 foreign key(From_station) references Stations(station_id), constraint Card_Rides_fk2 foreign key(To_station) references Stations(station_id), constraint Card_Rides_fk3 foreign key(Card_id) references cards(card_number) );
                     """);
             int tmp = 0;
             for (Ride r : rides) {
                 if (r.getUser() == null) continue;
                 if (r.getUser().length() == 18) { // user rides
-                    writerUser.append("INSERT INTO User_Rides(Ride_id, User_id, on_the_ride, From_station, To_station, Price, Start_time, End_time) ");
+                    writerUser.append("INSERT INTO User_Rides(Ride_id, User_id, business_carriage, on_the_ride, From_station, To_station, Price, Start_time, End_time) ");
                     writerUser.append(
-                            " VALUES(" + (++tmp) + ", '" + r.getUser() + "', 1, " + stationsMap.get(r.getStartStation().replace("'", "''")) + ", " + stationsMap.get(r.getEndStation().replace("'", "''")) + ", " + r.getPrice() + ", '" + r.getStartTime() + "', '" + r.getEndTime() + "');\n");
+                            " VALUES(" + (++tmp) + ", '" + r.getUser() + "', 0, 1, " + stationsMap.get(r.getStartStation().replace("'", "''")) + ", " + stationsMap.get(r.getEndStation().replace("'", "''")) + ", " + r.getPrice() + ", '" + r.getStartTime() + "', '" + r.getEndTime() + "');\n");
                 } else if (r.getUser().length() == 9) { // card rides
-                    writerCard.append("INSERT INTO Card_Rides(Ride_id, Card_id, on_the_ride, From_station, To_station, Price, Start_time, End_time) ");
+                    writerCard.append("INSERT INTO Card_Rides(Ride_id, Card_id, business_carriage, on_the_ride, From_station, To_station, Price, Start_time, End_time) ");
                     writerCard.append(
-                            " VALUES(" + (++tmp) + ", '" + r.getUser() + "', 1, " + stationsMap.get(r.getStartStation().replace("'", "''")) + ", " + stationsMap.get(r.getEndStation().replace("'", "''")) + ", " + r.getPrice() + ", '" + r.getStartTime() + "', '" + r.getEndTime() + "');\n");
+                            " VALUES(" + (++tmp) + ", '" + r.getUser() + "', 0, 1, " + stationsMap.get(r.getStartStation().replace("'", "''")) + ", " + stationsMap.get(r.getEndStation().replace("'", "''")) + ", " + r.getPrice() + ", '" + r.getStartTime() + "', '" + r.getEndTime() + "');\n");
                 }
             }
             writerUser.close();
