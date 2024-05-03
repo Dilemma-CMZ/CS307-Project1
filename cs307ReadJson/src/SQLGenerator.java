@@ -160,7 +160,7 @@ public class SQLGenerator {
                 String url = Lines.getString("url");
                 JSONArray station_array = JSONArray.parseArray(Lines.getString("stations"));
                 writerLines.append("INSERT INTO Lines(Line_id, line_name, business_carriage ,start_time, end_time, intro, mileage, color, first_opening, url) ");
-                if (line_id == 11)
+                if (line_id == 12)
                     writerLines.append("VALUES(" + line_id + ", '" + line_name + "', " + 1 + ", '" + start_time + "', '" + end_time + "', '" + intro + "', '" + mileage + "', '" + color + "', '" + first_opening + "', '" + url + "');\n"); else
                     writerLines.append("VALUES(" + line_id + ", '" + line_name + "', " + 0 + ", '" + start_time + "', '" + end_time + "', '" + intro + "', '" + mileage + "', '" + color + "', '" + first_opening + "', '" + url + "');\n");
                 int station_countt = 0;
