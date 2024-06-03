@@ -120,6 +120,12 @@ public class FullLoaderMySQL {
             System.out.println(sql + ".sql: insert " + cnt + " data successfully!");
         }
 
+        // drop
+        loadData("drop table if exists buildings;");
+        loadData("drop table if exists bus_lines;");
+        loadData("drop table if exists bus_names;");
+        loadData("drop table if exists entrances;");
+
         closeDB();
         long end = System.currentTimeMillis();
         System.out.println(allCnt + " records successfully loaded");
